@@ -107,7 +107,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="sdkmenuicon.png" />
+    <Content Include="LoadedIcon.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
