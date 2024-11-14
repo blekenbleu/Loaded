@@ -43,10 +43,10 @@ namespace blekenbleu.loaded
             {
                 if (data.OldData != null && data.NewData != null)
                 {
-                    if (data.OldData.SpeedKmh < Settings.SpeedWarningLevel && data.OldData.SpeedKmh >= Settings.SpeedWarningLevel)
+                    if (data.OldData.SpeedKmh < Settings.Gain && data.OldData.SpeedKmh >= Settings.Gain)
                     {
                         // Trigger an event
-                        this.TriggerEvent("SpeedWarning");
+                        this.TriggerEvent("GainChange");
                     }
                 }
             }
@@ -87,22 +87,23 @@ namespace blekenbleu.loaded
             Settings = this.ReadCommonSettings<Settings>("GeneralSettings", () => new Settings());
 
             // Declare a property available in the property list, this gets evaluated "on demand" (when shown or used in formulas)
-            this.AttachDelegate("CurrentDateTime", () => DateTime.Now);
+            this.AttachDelegate("Gain", () => Settings.Gain);
 
             // Declare an event
-            this.AddEvent("SpeedWarning");
+            this.AddEvent("GainChange");
 
             // Declare an action which can be called
-            this.AddAction("IncrementSpeedWarning",(a, b) =>
+            this.AddAction("IncrementGain",(a, b) =>
             {
-                Settings.SpeedWarningLevel++;
-                SimHub.Logging.Current.Info("Speed warning changed");
+                Settings.Gain++;
+                SimHub.Logging.Current.Info(LeftMenuTitle + $"Gain {Settings.Gain}");
             });
 
             // Declare an action which can be called
-            this.AddAction("DecrementSpeedWarning", (a, b) =>
+            this.AddAction("DecrementGain", (a, b) =>
             {
-                Settings.SpeedWarningLevel--;
+                Settings.Gain--;
+                SimHub.Logging.Current.Info(LeftMenuTitle + $"Gain {Settings.Gain}");
             });
         }
     }

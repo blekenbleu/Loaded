@@ -7,7 +7,7 @@ namespace blekenbleu.loaded
     /// </summary>
     public partial class Control : UserControl
     {
-        public Loaded Plugin { get; }
+        public Loaded Model { get; }
 
         public Control()
         {
@@ -16,7 +16,7 @@ namespace blekenbleu.loaded
 
         public Control(Loaded plugin) : this()
         {
-            this.Plugin = plugin;
+            this.Model = plugin;
         }
 
 

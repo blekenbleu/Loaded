@@ -5,6 +5,6 @@
     /// </summary>
     public class Settings
     {
-        public int SpeedWarningLevel = 100;
+        public int Gain = 100;
     }
 }
