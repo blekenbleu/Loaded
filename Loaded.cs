@@ -1,6 +1,8 @@
 ﻿using GameReaderCommon;
 using SimHub.Plugins;
 using System;
+using System.Diagnostics;
+using System.Reflection;
 using System.Windows.Media;
 
 namespace blekenbleu.loaded
@@ -10,6 +12,11 @@ namespace blekenbleu.loaded
     [PluginName("Loaded")]
     public class Loaded : IPlugin, IDataPlugin, IWPFSettingsV2
     {
+		string GameDBText, LoadStr;
+		double LoadFL, LoadFR, LoadRL, LoadRR, Heave;
+		string[] corner;
+		public string PluginVersion = FileVersionInfo.GetVersionInfo(
+            Assembly.GetExecutingAssembly().Location).FileVersion.ToString(); 
         public Settings Settings;
 
         /// <summary>
@@ -43,6 +50,21 @@ namespace blekenbleu.loaded
             {
                 if (data.OldData != null && data.NewData != null)
                 {
+					Heave = Convert.ToDouble(pluginManager.GetPropertyValue("DataCorePlugin.GameData.AccelerationHeave"));
+					if (null != LoadStr)
+		            {
+						LoadFR = Convert.ToDouble(pluginManager.GetPropertyValue(LoadStr+corner[0]));
+						LoadFL = Convert.ToDouble(pluginManager.GetPropertyValue(LoadStr+corner[1]));
+						LoadRR = Convert.ToDouble(pluginManager.GetPropertyValue(LoadStr+corner[2]));
+						LoadRL = Convert.ToDouble(pluginManager.GetPropertyValue(LoadStr+corner[3]));
+		            }
+			/* Capture suspension travel values when speed and heave are 0
+			 ; changes from those values should correlate to changes in load
+			 ; changes from average (total) should correlate to heave
+			 ; rescale average suspension travel by heave to normalize loads
+			 ; front and rear suspension spring rates typically differ...
+			 */
+
                     if (data.OldData.SpeedKmh < Settings.Gain && data.OldData.SpeedKmh >= Settings.Gain)
                     {
                         // Trigger an event
@@ -81,8 +103,25 @@ namespace blekenbleu.loaded
         /// <param name="pluginManager"></param>
         public void Init(PluginManager pluginManager)
         {
-            SimHub.Logging.Current.Info("Starting plugin");
+            SimHub.Logging.Current.Info("Starting plugin version " + PluginVersion);
+			GameDBText = pluginManager.GameName;
+            this.AttachDelegate("Game", () => GameDBText);
+			switch (GameDBText)
+			{
+                case "AssettoCorsa":
+					LoadStr = "DataCorePlugin.GameRawData.Physics.WheelLoad0";
+					corner =  new string[] { "1", "2", "3", "4" };
+                    break;
+			}
 
+			this.AttachDelegate("Heave", () => Heave);
+			if (null != LoadStr)
+			{
+				this.AttachDelegate("FR", () => LoadFR);
+				this.AttachDelegate("FL", () => LoadFL);
+				this.AttachDelegate("RR", () => LoadRR);
+				this.AttachDelegate("RL", () => LoadRL);
+			}
             // Load settings
             Settings = this.ReadCommonSettings<Settings>("GeneralSettings", () => new Settings());
 
@@ -95,14 +134,16 @@ namespace blekenbleu.loaded
             // Declare an action which can be called
             this.AddAction("IncrementGain",(a, b) =>
             {
-                Settings.Gain++;
+                Settings.Gain += Settings.Gain >> 3;
                 SimHub.Logging.Current.Info(LeftMenuTitle + $"Gain {Settings.Gain}");
             });
 
             // Declare an action which can be called
             this.AddAction("DecrementGain", (a, b) =>
             {
-                Settings.Gain--;
+                Settings.Gain -= Settings.Gain >> 3;
+                if (10 > Settings.Gain)
+                    Settings.Gain = 10;
                 SimHub.Logging.Current.Info(LeftMenuTitle + $"Gain {Settings.Gain}");
             });
         }
