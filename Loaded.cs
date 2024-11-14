@@ -8,7 +8,7 @@ namespace blekenbleu.loaded
     [PluginDescription("estimate wheel loads similar to Assetto Corsa")]
     [PluginAuthor("blekenbleu")]
     [PluginName("Loaded")]
-    public class Plugin : IPlugin, IDataPlugin, IWPFSettingsV2
+    public class Loaded : IPlugin, IDataPlugin, IWPFSettingsV2
     {
         public Settings Settings;
 

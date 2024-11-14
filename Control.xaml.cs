@@ -7,14 +7,14 @@ namespace blekenbleu.loaded
     /// </summary>
     public partial class Control : UserControl
     {
-        public Plugin Plugin { get; }
+        public Loaded Plugin { get; }
 
         public Control()
         {
             InitializeComponent();
         }
 
-        public Control(Plugin plugin) : this()
+        public Control(Loaded plugin) : this()
         {
             this.Plugin = plugin;
         }
