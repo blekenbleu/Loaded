@@ -10,10 +10,12 @@ namespace blekenbleu.loaded
 	[PluginDescription("estimate wheel loads similar to Assetto Corsa")]
 	[PluginAuthor("blekenbleu")]
 	[PluginName("Loaded")]
-	public class Loaded : IPlugin, IDataPlugin, IWPFSettingsV2
+	public partial class Loaded : IPlugin, IDataPlugin, IWPFSettingsV2
 	{
-		string GameDBText, LoadStr, DeflStr;
-		double LoadFL, LoadFR, LoadRL, LoadRR, DeflFL, DeflFR, DeflRL, DeflRR, Heave;
+		string GameDBText, LoadStr, DeflStr, CarId = "";
+		double LoadFL, LoadFR, LoadRL, LoadRR, DeflFL, DeflFR, DeflRL, DeflRR;
+		double Heave, DeflF0 = 0, DeflR0 = 0, DeflF0Avg = 0, DeflR0Avg = 0;
+		uint Zero = 0;
 		string[] corner, dorner;
 		public string PluginVersion = FileVersionInfo.GetVersionInfo(
 			Assembly.GetExecutingAssembly().Location).FileVersion.ToString(); 
@@ -46,43 +48,11 @@ namespace blekenbleu.loaded
 		public void DataUpdate(PluginManager pluginManager, ref GameData data)
 		{
 			// Define the value of our property (declared in init)
-			if (data.GameRunning)
-			{
-				if (data.OldData != null && data.NewData != null)
-				{
-					Heave = Convert.ToDouble(pluginManager.GetPropertyValue("DataCorePlugin.GameData.AccelerationHeave"));
-					if (null != LoadStr)
-					{
-						if (null != corner)
-						{
-							LoadFR = Convert.ToDouble(pluginManager.GetPropertyValue(LoadStr+corner[0]));
-							LoadFL = Convert.ToDouble(pluginManager.GetPropertyValue(LoadStr+corner[1]));
-							LoadRR = Convert.ToDouble(pluginManager.GetPropertyValue(LoadStr+corner[2]));
-							LoadRL = Convert.ToDouble(pluginManager.GetPropertyValue(LoadStr+corner[3]));
-						}
-						else {
-							LoadFR = Convert.ToDouble(pluginManager.GetPropertyValue(LoadStr+dorner[0]));
-							LoadFL = Convert.ToDouble(pluginManager.GetPropertyValue(LoadStr+dorner[1]));
-							LoadRR = Convert.ToDouble(pluginManager.GetPropertyValue(LoadStr+dorner[2]));
-							LoadRL = Convert.ToDouble(pluginManager.GetPropertyValue(LoadStr+dorner[3]));
-						}
-					}
-					if (null != DeflStr)
-					{
-						if (null != dorner)
-						{
-							DeflFR = Convert.ToDouble(pluginManager.GetPropertyValue(DeflStr+dorner[0]));
-							DeflFL = Convert.ToDouble(pluginManager.GetPropertyValue(DeflStr+dorner[1]));
-							DeflRR = Convert.ToDouble(pluginManager.GetPropertyValue(DeflStr+dorner[2]));
-							DeflRL = Convert.ToDouble(pluginManager.GetPropertyValue(DeflStr+dorner[3]));
-						}
-						else {
-							DeflFR = Convert.ToDouble(pluginManager.GetPropertyValue(DeflStr+corner[0]));
-							DeflFL = Convert.ToDouble(pluginManager.GetPropertyValue(DeflStr+corner[1]));
-							DeflRR = Convert.ToDouble(pluginManager.GetPropertyValue(DeflStr+corner[2]));
-							DeflRL = Convert.ToDouble(pluginManager.GetPropertyValue(DeflStr+corner[3]));
-						}
-					}
+			if (!data.GameRunning || null == data.OldData || null == data.NewData)
+				return;
+
+			Heave = (double)data.NewData.AccelerationHeave; //Convert.ToDouble(pluginManager.GetPropertyValue("DataCorePlugin.GameData.AccelerationHeave"));
+			Load(pluginManager, ref data);
 			/* Capture suspension travel values when speed and heave are 0
 			 ; changes from those values should correlate to changes in load
 			 ; changes from average (total) should correlate to heave
@@ -90,12 +60,10 @@ namespace blekenbleu.loaded
 			 ; front and rear suspension spring rates typically differ...
 			 */
 
-					if (data.OldData.SpeedKmh < Settings.Gain && data.OldData.SpeedKmh >= Settings.Gain)
-					{
-						// Trigger an event
-						this.TriggerEvent("GainChange");
-					}
-				}
+			if (data.OldData.SpeedKmh < Settings.Gain && data.OldData.SpeedKmh >= Settings.Gain)
+			{
+				// Trigger an event
+				this.TriggerEvent("GainChange");
 			}
 		}
 
@@ -188,7 +156,6 @@ namespace blekenbleu.loaded
 					corner =  new string[] { "LF.strutForce", "RF.strutForce", "LB.strutForce", "RB.strutForce" };
 					dorner =  new string[] { "LF.springDeflection", "RF.springDeflection", "LB.springDeflection", "RB.springDeflection" };
 					break;
-				
 			}
 
 			this.AttachDelegate("Heave", () => Heave);
@@ -198,6 +165,9 @@ namespace blekenbleu.loaded
 				this.AttachDelegate("DeflFL", () => DeflFL);
 				this.AttachDelegate("DeflRR", () => DeflRR);
 				this.AttachDelegate("DeflRL", () => DeflRL);
+				this.AttachDelegate("DeflR0Avg", () => DeflR0Avg);
+				this.AttachDelegate("DeflF0Avg", () => DeflF0Avg);	//DeflF0Avg = 0, DeflR0Avg = 0
+				this.AttachDelegate("Defl0Count", () => Zero);
 			}
 			if (null != LoadStr)
 			{
