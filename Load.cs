@@ -44,16 +44,16 @@ namespace blekenbleu.loaded
 				}
 				if (CarId != data.NewData.CarId)
 				{
-					DeflF0 = DeflR0 = Zero = 0;	// car suspension deflections differ
+					Defl0[0] = Defl0[1] = Zero = 0;	// car suspension deflections differ
 					CarId = data.NewData.CarId;
 				}
-				if (3 > data.NewData.SpeedLocal && 0.05 > Math.Abs(Heave) && 0.15 > Math.Abs((double)data.NewData.AccelerationSurge))
+				if (Thresh_sv > data.NewData.SpeedLocal && Thresh_sh > Math.Abs(Heave) && Thresh_ss * 0.01 > Math.Abs((double)data.NewData.AccelerationSurge))
 				{
 					Zero++;
-					DeflF0 += (DeflFR + DeflFL);
-					DeflR0 += (DeflRR + DeflRL);
-					DeflF0Avg = DeflF0 / Zero;
-					DeflR0Avg = DeflR0 / Zero;
+					Defl0[0] += (DeflFR + DeflFL);
+					Defl0[1] += (DeflRR + DeflRL);
+					Defl0Avg[0] = Defl0[0] / Zero;
+					Defl0Avg[1] = Defl0[1] / Zero;
 				}
 			}
 		}

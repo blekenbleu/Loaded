@@ -14,7 +14,9 @@ namespace blekenbleu.loaded
 	{
 		string GameDBText, LoadStr, DeflStr, CarId = "";
 		double LoadFL, LoadFR, LoadRL, LoadRR, DeflFL, DeflFR, DeflRL, DeflRR;
-		double Heave, DeflF0 = 0, DeflR0 = 0, DeflF0Avg = 0, DeflR0Avg = 0;
+		double[] Defl0 = new double[] {0,0}, Defl0Avg = new double[] {0,0};
+		double Heave;
+		double Thresh_sv = 3, Thresh_sh = 0.15, Thresh_ss = 0.15;
 		uint Zero = 0;
 		string[] corner, dorner;
 		public string PluginVersion = FileVersionInfo.GetVersionInfo(
@@ -89,6 +91,21 @@ namespace blekenbleu.loaded
 			return View = new Control(this);
 		}
 
+		public void FromSh(double value)
+		{
+			Thresh_sh = 0.1 * value;
+		}
+
+		public void FromSs(double value)
+		{
+			Thresh_ss = 0.01 * value;
+		}
+
+		public void FromSv(double value)
+		{
+			Thresh_sv = 0.01 * value;
+		}
+
 		/// <summary>
 		/// Called once after plugins startup
 		/// Plugins are rebuilt at game change
@@ -159,14 +176,20 @@ namespace blekenbleu.loaded
 			}
 
 			this.AttachDelegate("Heave", () => Heave);
+			this.AttachDelegate("Slider_sh", () => View.sh.Value);
+			this.AttachDelegate("Slider_ss", () => View.ss.Value);
+			this.AttachDelegate("Slider_sv", () => View.sv.Value);
+			this.AttachDelegate("Thresh_sh", () => Thresh_sh);
+			this.AttachDelegate("Thresh_ss", () => Thresh_ss);
+			this.AttachDelegate("Thresh_sv", () => Thresh_sv);
 			if (null != DeflStr)
 			{
 				this.AttachDelegate("DeflFR", () => DeflFR);
 				this.AttachDelegate("DeflFL", () => DeflFL);
 				this.AttachDelegate("DeflRR", () => DeflRR);
 				this.AttachDelegate("DeflRL", () => DeflRL);
-				this.AttachDelegate("DeflR0Avg", () => DeflR0Avg);
-				this.AttachDelegate("DeflF0Avg", () => DeflF0Avg);	//DeflF0Avg = 0, DeflR0Avg = 0
+				this.AttachDelegate("Defl0Avg", () => $"{Defl0Avg[0]:##0.000}, {Defl0Avg[1]:##0.000}");
+			//	this.AttachDelegate("DeflF0Avg", () => DeflF0Avg);	//DeflF0Avg = 0, DeflR0Avg = 0
 				this.AttachDelegate("Defl0Count", () => Zero);
 			}
 			if (null != LoadStr)

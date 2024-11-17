@@ -8,18 +8,34 @@
              mc:Ignorable="d"
              xmlns:ui="clr-namespace:SimHub.Plugins.UI;assembly=SimHub.Plugins"
              xmlns:converter="http://metro.mahapps.com/winfx/xaml/iconpacks">
+    
     <ScrollViewer>
-        <Grid Height="150" Width="800" VerticalAlignment="Top">
+        
+        <Grid Height="450" Width="800" VerticalAlignment="Top">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition Width="0*" />
             </Grid.ColumnDefinitions>
+
             <styles:SHSection Title="OPTIONS" Grid.ColumnSpan="2" ShowSeparator="True">
-                <StackPanel Orientation="Horizontal">
+                <StackPanel>
+                    <styles:SHSubSection Title="Load gain"/>
                     <ui:ControlsEditor
-						FriendlyName="Decrement Gain" ActionName="Loaded.DecrementGain"></ui:ControlsEditor>
+						FriendlyName="    Decrement Gain" ActionName="Loaded.DecrementGain"></ui:ControlsEditor>
                     <ui:ControlsEditor
-						FriendlyName="Increment Gain" ActionName="Loaded.IncrementGain"></ui:ControlsEditor>
+						FriendlyName="    Increment Gain" ActionName="Loaded.IncrementGain"></ui:ControlsEditor>
+                    <styles:SHSectionSeparator></styles:SHSectionSeparator>
+                    <styles:SHSubSection Title="Deflection calibration controls:  idle upper limits"/>
+                    <ui:TitledSlider Title="     speed threshold - will be multiplied by 0.1"
+									 Thumb.DragCompleted="Change_sv" TickFrequency = "1" IsSnapToTickEnabled = "True"
+                                     Maximum="50" Minimum="0" Value="30" x:Name="sv"/>
+                    <ui:TitledSlider Title="     surge threshold - will be multiplied by 0.01"
+									 Thumb.DragCompleted="Change_ss" TickFrequency = "1" IsSnapToTickEnabled = "True"
+                                     Maximum="50" Minimum="0" Value="15" x:Name="ss"/>
+                    <ui:TitledSlider Title="     heave threshold - will be multiplied by 0.01"
+									 Thumb.DragCompleted="Change_sh"
+									 TickFrequency = "1" IsSnapToTickEnabled = "True"
+                                     Maximum="50" Minimum="0" Value="15" x:Name="sh"/>
                 </StackPanel>
             </styles:SHSection>
         </Grid>
