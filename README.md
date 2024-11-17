@@ -19,3 +19,24 @@ Example:
 Front Right wheel load:   `loadFR = 25 + AccelerationHeave*travelFR/(travelFR + travelFL + travelRR + travelRL)`  
 - different games have different property names for suspension travel;  
 	unclear whether any iRacing properties correspond to suspension travel...
+
+### New to me: *TwoWay Binding*
+- XAML:&nbsp; `Value="{Binding foo, Mode=TwoWay}"` 
+- `DataContext` can be per-XAML element...
+- Setting `DataContext` inside .xaml did not work for `TwoWay`:
+```
+    <UserControl.DataContext>
+        <local:Model/>
+    </UserControl.DataContext>
+```
+
+-  `TwoWay` *works* for code-behind:  
+```
+        public Control(Loaded plugin) : this()
+        {
+            Plugin = plugin;
+            Model = new Model();
+            DataContext = Model;
+        }
+```
+- *reminder*:&nbsp; [**WPF Data Binding: C# INotifyPropertyChanged**](https://wellsb.com/csharp/learn/wpf-data-binding-csharp-inotifypropertychanged/)

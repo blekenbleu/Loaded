@@ -1,9 +1,6 @@
 ﻿using GameReaderCommon;
 using SimHub.Plugins;
 using System;
-using System.Diagnostics;
-using System.Reflection;
-using System.Windows.Media;
 
 namespace blekenbleu.loaded
 {
@@ -47,7 +44,9 @@ namespace blekenbleu.loaded
 					Defl0[0] = Defl0[1] = Zero = 0;	// car suspension deflections differ
 					CarId = data.NewData.CarId;
 				}
-				if (Thresh_sv > data.NewData.SpeedLocal && Thresh_sh > Math.Abs(Heave) && Thresh_ss * 0.01 > Math.Abs((double)data.NewData.AccelerationSurge))
+				if (View.Model.Thresh_sv > data.NewData.SpeedLocal
+				 && View.Model.Thresh_sh * 0.01 > Math.Abs(Heave)
+				 && View.Model.Thresh_ss * 0.01 > Math.Abs((double)data.NewData.AccelerationSurge))
 				{
 					Zero++;
 					Defl0[0] += (DeflFR + DeflFL);

@@ -2,36 +2,25 @@
 
 namespace blekenbleu.loaded
 {
-    /// <summary>
-    /// Control.xaml interaction logic
-    /// </summary>
-    public partial class Control : UserControl
-    {
-        public Loaded Plugin { get; }
+	/// <summary>
+	/// Control.xaml interaction logic
+	/// </summary>
+	public partial class Control : UserControl
+	{
+		public Loaded Plugin { get; }
+		public Model Model { get; }		// for e.g. Binding slider values
 
-        public Control()
-        {
-            InitializeComponent();
-        }
-
-        public Control(Loaded plugin) : this()
-        {
-            this.Plugin = plugin;
-        }
-
-		public void Change_sv(object sender, System.EventArgs e)
+		public Control()
 		{
-			Plugin.FromSv(sv.Value);
+			InitializeComponent();
 		}
 
-		public void Change_ss(object sender, System.EventArgs e)
+		public Control(Loaded plugin) : this()
 		{
-			Plugin.FromSs(ss.Value);
+			Plugin = plugin;
+			Model = new Model();
+			DataContext = Model;
+			tt.Title = "Version " + Plugin.PluginVersion + " Options";
 		}
-
-		public void Change_sh(object sender, System.EventArgs e)
-		{
-			Plugin.FromSh(sh.Value);
-		}
-    }
+	}
 }

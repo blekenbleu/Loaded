@@ -1,6 +1,5 @@
 ﻿using GameReaderCommon;
 using SimHub.Plugins;
-using System;
 using System.Diagnostics;
 using System.Reflection;
 using System.Windows.Media;
@@ -12,11 +11,12 @@ namespace blekenbleu.loaded
 	[PluginName("Loaded")]
 	public partial class Loaded : IPlugin, IDataPlugin, IWPFSettingsV2
 	{
+		Control View;
 		string GameDBText, LoadStr, DeflStr, CarId = "";
 		double LoadFL, LoadFR, LoadRL, LoadRR, DeflFL, DeflFR, DeflRL, DeflRR;
-		double[] Defl0 = new double[] {0,0}, Defl0Avg = new double[] {0,0};
-		double Heave;
-		double Thresh_sv = 3, Thresh_sh = 0.15, Thresh_ss = 0.15;
+        readonly double[] Defl0 = new double[] { 0, 0 };
+        readonly double[] Defl0Avg = new double[] { 0, 0 };
+        double Heave;
 		uint Zero = 0;
 		string[] corner, dorner;
 		public string PluginVersion = FileVersionInfo.GetVersionInfo(
@@ -34,7 +34,8 @@ namespace blekenbleu.loaded
 		public ImageSource PictureIcon => this.ToIcon(Properties.Resources.LoadedIcon);
 
 		/// <summary>
-		/// Gets a short plugin title to show in left menu. Return null if you want to use the title as defined in PluginName attribute.
+		/// Gets a short plugin title to show in left menu.
+		/// Return null if you want to use the title as defined in PluginName attribute.
 		/// </summary>
 		public string LeftMenuTitle => "Loaded";
 
@@ -42,7 +43,8 @@ namespace blekenbleu.loaded
 		/// Called one time per game data update, contains all normalized game data,
 		/// raw data are intentionnally "hidden" under a generic object type (A plugin SHOULD NOT USE IT)
 		///
-		/// This method is on the critical path, it must execute as fast as possible and avoid throwing any error
+		/// This method is on the critical path
+		/// it must execute as fast as possible and avoid throwing any error
 		///
 		/// </summary>
 		/// <param name="pluginManager"></param>
@@ -53,7 +55,7 @@ namespace blekenbleu.loaded
 			if (!data.GameRunning || null == data.OldData || null == data.NewData)
 				return;
 
-			Heave = (double)data.NewData.AccelerationHeave; //Convert.ToDouble(pluginManager.GetPropertyValue("DataCorePlugin.GameData.AccelerationHeave"));
+			Heave = (double)data.NewData.AccelerationHeave;
 			Load(pluginManager, ref data);
 			/* Capture suspension travel values when speed and heave are 0
 			 ; changes from those values should correlate to changes in load
@@ -85,25 +87,9 @@ namespace blekenbleu.loaded
 		/// </summary>
 		/// <param name="pluginManager"></param>
 		/// <returns></returns>
-		Control View;
 		public System.Windows.Controls.Control GetWPFSettingsControl(PluginManager pluginManager)
 		{
 			return View = new Control(this);
-		}
-
-		public void FromSh(double value)
-		{
-			Thresh_sh = 0.1 * value;
-		}
-
-		public void FromSs(double value)
-		{
-			Thresh_ss = 0.01 * value;
-		}
-
-		public void FromSv(double value)
-		{
-			Thresh_sv = 0.01 * value;
 		}
 
 		/// <summary>
@@ -114,95 +100,29 @@ namespace blekenbleu.loaded
 		public void Init(PluginManager pluginManager)
 		{
 			SimHub.Logging.Current.Info("Starting plugin version " + PluginVersion);
-			GameDBText = pluginManager.GameName;
-			this.AttachDelegate("Game", () => GameDBText);
-			switch (GameDBText)
-			{
-				case "AssettoCorsa":
-					LoadStr = "DataCorePlugin.GameRawData.Physics.WheelLoad0";
-					DeflStr = "DataCorePlugin.GameRawData.Physics.SuspensionTravel0";
-					corner =  new string[] { "1", "2", "3", "4" };
-					break;
-				case "AssettoCorsaCompetizione":
-					DeflStr = "DataCorePlugin.GameRawData.Physics.SuspensionTravel0";
-					corner =  new string[] { "1", "2", "3", "4" };
-					break;
-				case "Automobilista":
-					LoadStr = "DataCorePlugin.GameRawData.Data.wheel";
-					DeflStr = "DataCorePlugin.GameRawData.Data.wheel";
-					corner =  new string[] { "01.tireLoad", "02.tireLoad", "04.tireLoad", "04.tireLoad" };
-					dorner =  new string[] { "01.suspensionDeflection", "02.suspensionDeflection", "04.suspensionDeflection", "04.suspensionDeflection" };
-					break;
-				case "Automobilista2":
-					DeflStr = "DataCorePlugin.GameRawData.mSuspensionTravel0";
-					corner =  new string[] { "1", "2", "3", "4" };
-					break;
-				case "BeamNgDrive":
-					DeflStr = "DataCorePlugin.GameRawData.suspension_position_";
-					corner =  new string[] { "fl", "fr", "rl", "rr" };
-					break;
-				case "CodemastersDirt4":
-					DeflStr = "DataCorePlugin.GameRawData.SuspensionPosition";
-					corner =  new string[] { "FrontLeft", "FrontRight", "RearLeft", "RearRight" };
-					break;
-				case "EAWRC23":
-					DeflStr = "DataCorePlugin.GameRawData.SessionUpdate.vehicle_hub_position_";
-					corner =  new string[] { "fl", "fr", "bl", "br" };
-					break;
-				case "FH5":
-					DeflStr = "DataCorePlugin.GameRawData.NormalizedSuspensionTravel";
-					corner =  new string[] { "FrontLeft", "FrontRight", "RearLeft", "RearRight" };
-					break;
-				case "PCars2":
-					DeflStr = "DataCorePlugin.GameRawData.mSuspensionTravel0";
-					corner =  new string[] { "1", "2", "3", "4" };
-					break;
-				case "RRRE":
-					DeflStr = "DataCorePlugin.GameRawData.Player.SuspensionDeflection.";
-					corner =  new string[] { "FrontLeft", "FrontRight", "RearLeft", "RearRight" };
-					break;
-				case "RFactor2":
-					LoadStr = "DataCorePlugin.GameRawData.CurrentPlayerTelemetry.mWheels0";
-					DeflStr = "DataCorePlugin.GameRawData.CurrentPlayerTelemetry.mWheels0";
-					corner =  new string[] { "1.mSuspForce", "2.mSuspForce", "3.mSuspForce", "4.mSuspForce" };
-					dorner =  new string[] { "1.mVerticalTireDeflection", "2.mVerticalTireDeflection", "3.mVerticalTireDeflection", "4.mVerticalTireDeflection" };
-					break;
-				case "RBR":
-					LoadStr = "DataCorePlugin.GameRawData.NGPTelemetry.car.suspension";
-					DeflStr = "DataCorePlugin.GameRawData.NGPTelemetry.car.suspension";
-					corner =  new string[] { "LF.strutForce", "RF.strutForce", "LB.strutForce", "RB.strutForce" };
-					dorner =  new string[] { "LF.springDeflection", "RF.springDeflection", "LB.springDeflection", "RB.springDeflection" };
-					break;
-			}
+			Game(GameDBText = pluginManager.GameName);
 
-			this.AttachDelegate("Heave", () => Heave);
-			this.AttachDelegate("Slider_sh", () => View.sh.Value);
-			this.AttachDelegate("Slider_ss", () => View.ss.Value);
-			this.AttachDelegate("Slider_sv", () => View.sv.Value);
-			this.AttachDelegate("Thresh_sh", () => Thresh_sh);
-			this.AttachDelegate("Thresh_ss", () => Thresh_ss);
-			this.AttachDelegate("Thresh_sv", () => Thresh_sv);
+            // Declare properties available in the property list
+            // these get evaluated "on demand" (when shown or used in formulas)
+            this.AttachDelegate("Game", () => GameDBText);
+            this.AttachDelegate("Heave", () => Heave);
+			this.AttachDelegate("Thresh_sh", () => 0.01 * View.Model.Thresh_sh);
+			this.AttachDelegate("Thresh_ss", () => 0.01 * View.Model.Thresh_ss);
+			this.AttachDelegate("Thresh_sv", () => View.Model.Thresh_sv);
 			if (null != DeflStr)
 			{
-				this.AttachDelegate("DeflFR", () => DeflFR);
-				this.AttachDelegate("DeflFL", () => DeflFL);
-				this.AttachDelegate("DeflRR", () => DeflRR);
-				this.AttachDelegate("DeflRL", () => DeflRL);
+				this.AttachDelegate("Deflections", () =>
+					$"{DeflFR:0.0000}, {DeflFL:0.0000}, {DeflRR:0.0000}, {DeflRL:0.0000}");
 				this.AttachDelegate("Defl0Avg", () => $"{Defl0Avg[0]:##0.000}, {Defl0Avg[1]:##0.000}");
-			//	this.AttachDelegate("DeflF0Avg", () => DeflF0Avg);	//DeflF0Avg = 0, DeflR0Avg = 0
 				this.AttachDelegate("Defl0Count", () => Zero);
 			}
 			if (null != LoadStr)
-			{
-				this.AttachDelegate("FR", () => LoadFR);
-				this.AttachDelegate("FL", () => LoadFL);
-				this.AttachDelegate("RR", () => LoadRR);
-				this.AttachDelegate("RL", () => LoadRL);
-			}
+				this.AttachDelegate("Loads", () =>
+                  $"{LoadFR:####0.0000}, {LoadFL:####0.0000}, {LoadRR:####0.0000}, {LoadRL:####0.0000}");
+
 			// Load settings
 			Settings = this.ReadCommonSettings<Settings>("GeneralSettings", () => new Settings());
 
-			// Declare a property available in the property list, this gets evaluated "on demand" (when shown or used in formulas)
 			this.AttachDelegate("Gain", () => Settings.Gain);
 
 			// Declare an event
