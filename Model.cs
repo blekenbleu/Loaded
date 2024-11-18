@@ -55,5 +55,12 @@ namespace blekenbleu.loaded
 			get => thresh_ss;
 			set { SetField(ref thresh_ss, value, nameof(Thresh_ss)); }
 		}
+
+		private double filter_L = 15;
+		public double Filter_L
+		{
+			get => filter_L;
+			set { SetField(ref filter_L, value, nameof(Filter_L)); }
+		}
 	}
 }

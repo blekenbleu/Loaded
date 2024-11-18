@@ -8,9 +8,9 @@
 			 xmlns:styles="clr-namespace:SimHub.Plugins.Styles;assembly=SimHub.Plugins"
 			 xmlns:ui="clr-namespace:SimHub.Plugins.UI;assembly=SimHub.Plugins"
 			 d:DataContext="{d:DesignInstance Type=local:Model}"
-			 d:DesignHeight="450" d:DesignWidth="600">
+			 d:DesignHeight="500" d:DesignWidth="600">
 	
-	<Grid Height="450" Width="600" VerticalAlignment="Top">
+	<Grid Height="500" Width="600" VerticalAlignment="Top">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition />
 				<ColumnDefinition Width="0*" />
@@ -18,7 +18,7 @@
 
 			<styles:SHSection Title="OPTIONS" Grid.ColumnSpan="2" ShowSeparator="True" x:Name="tt">
 				<StackPanel>
-					<styles:SHSubSection Title="Load gain"/>
+					<styles:SHSubSection Title="Load gain" x:Name="gl"/>
 					<ui:ControlsEditor FriendlyName="	Decrement Gain" ActionName="Loaded.DecrementGain"/>
 					<ui:ControlsEditor FriendlyName="	Increment Gain" ActionName="Loaded.IncrementGain"/>
 
@@ -35,6 +35,10 @@
 									 Value="{Binding Thresh_sh, Mode=TwoWay}"
 									 TickFrequency = "1" IsSnapToTickEnabled = "True"
 									 Maximum="50" Minimum="0" x:Name="sh"/>
+					<ui:TitledSlider Title="	 Load filter factor"
+									 Value="{Binding Filter_L, Mode=TwoWay}"
+									 TickFrequency = "1" IsSnapToTickEnabled = "True"
+									 Maximum="50" Minimum="1" x:Name="fl"/>
 				</StackPanel>
 			</styles:SHSection>
 		</Grid>

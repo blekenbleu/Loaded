@@ -20,6 +20,13 @@ Front Right wheel load:   `loadFR = 25 + AccelerationHeave*travelFR/(travelFR + 
 - different games have different property names for suspension travel;  
 	unclear whether any iRacing properties correspond to suspension travel...
 
+#### Ratio for Load vs suspension deflection is quite nonlinear between compression and unloading
+- heave plot looks similar to sum of wheel load deltas
+	- also similar to sum of wheel deflection deltas...
+- use +/- heave to separately calibrate +/- suspension deflection deltas to estimated load scale factors
+	- heave minimum should be -25;&nbsp; maximum may be > 50
+	- load minimum should be 0...
+
 ### New to me: *TwoWay Binding*
 - XAML:&nbsp; `Value="{Binding foo, Mode=TwoWay}"` 
 - `DataContext` can be per-XAML element...

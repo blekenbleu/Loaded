@@ -17,6 +17,7 @@ namespace blekenbleu.loaded
 			Plugin = plugin;
 			DataContext = Model = new Model();
 			tt.Title = "Version " + Plugin.PluginVersion + " Options";
+			gl.Title = $"Load gain = {Plugin.Settings.Gain:##0.00}";
 		}
 	}
 }

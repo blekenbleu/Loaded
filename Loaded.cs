@@ -14,9 +14,13 @@ namespace blekenbleu.loaded
 		Control View;
 		string GameDBText, LoadStr, DeflStr, CarId = "";
 		double LoadFL, LoadFR, LoadRL, LoadRR, DeflFL, DeflFR, DeflRL, DeflRR;
-		readonly double[] Defl0 = new double[] { 0, 0 };
-		readonly double[] Defl0Avg = new double[] { 0, 0 };
-		double Heave;
+		double EstFL, EstFR, EstRL, EstRR;
+		double FiltFL, FiltFR, FiltRR, FiltRL;
+		readonly double[] Defl0 = new double[] { 0, 0, 0, 0 };
+		readonly double[] Defl0Avg = new double[] { 0, 0, 0, 0 };
+		readonly double[] Load0 = new double[] { 0, 0, 0, 0 };
+		readonly double[] Load0Avg = new double[] { 0, 0, 0, 0 };
+		double Heave, LSpeed, LSurge;
 		uint Zero = 0;
 		string[] corner, dorner;
 		public string PluginVersion = FileVersionInfo.GetVersionInfo(
@@ -56,6 +60,8 @@ namespace blekenbleu.loaded
 				return;
 
 			Heave = (double)data.NewData.AccelerationHeave;
+			LSpeed = data.NewData.SpeedLocal;
+			LSurge = (double)data.NewData.AccelerationSurge;
 			Load(pluginManager, ref data);
 			/* Capture suspension travel values when speed and heave are 0
 			 ; changes from those values should correlate to changes in load
@@ -105,20 +111,44 @@ namespace blekenbleu.loaded
 			// Declare properties available in the property list
 			// these get evaluated "on demand" (when shown or used in formulas)
 			this.AttachDelegate("Game", () => GameDBText);
-			this.AttachDelegate("Heave", () => Heave);
+			this.AttachDelegate("Heave", () => $"{Heave:0.000}");
+			this.AttachDelegate("Speed, Surge", () => $"{LSpeed:#0.0}, {LSurge:0.000}");
 			this.AttachDelegate("Thresh_sh", () => 0.01 * View.Model.Thresh_sh);
 			this.AttachDelegate("Thresh_ss", () => 0.01 * View.Model.Thresh_ss);
 			this.AttachDelegate("Thresh_sv", () => View.Model.Thresh_sv);
 			if (null != DeflStr)
 			{
-				this.AttachDelegate("Deflections", () =>
-					$"{DeflFR:0.0000}, {DeflFL:0.0000}, {DeflRR:0.0000}, {DeflRL:0.0000}");
-				this.AttachDelegate("Defl0Avg", () => $"{Defl0Avg[0]:##0.000}, {Defl0Avg[1]:##0.000}");
-				this.AttachDelegate("Defl0Count", () => Zero);
+				this.AttachDelegate("FLdefl", () => DeflFL);
+				this.AttachDelegate("FRdefl", () => DeflFR);
+				this.AttachDelegate("RLdefl", () => DeflRL);
+				this.AttachDelegate("RRdefl", () => DeflRR);
+				this.AttachDelegate("FL0AvgDefl", () => Defl0Avg[0]);
+				this.AttachDelegate("FR0AvgDefl", () => Defl0Avg[1]);
+				this.AttachDelegate("RL0AvgDefl", () => Defl0Avg[2]);
+				this.AttachDelegate("RR0AvgDefl", () => Defl0Avg[3]);
+				this.AttachDelegate("Count0", () => Zero);
+				this.AttachDelegate("Deflection delta", () => DeflRL + DeflRR + DeflFL + DeflFR
+												 - Defl0Avg[0] - Defl0Avg[1] - Defl0Avg[2] - Defl0Avg[3]);
 			}
 			if (null != LoadStr)
-				this.AttachDelegate("Loads", () =>
-				  $"{LoadFR:####0.0000}, {LoadFL:####0.0000}, {LoadRR:####0.0000}, {LoadRL:####0.0000}");
+			{
+				this.AttachDelegate("FRload", () => LoadFR);
+				this.AttachDelegate("FLload", () => LoadFL);
+				this.AttachDelegate("RRload", () => LoadRR);
+				this.AttachDelegate("RLload", () => LoadRL);
+				this.AttachDelegate("FL0AvgLoad", () => Load0Avg[0]);
+				this.AttachDelegate("FR0AvgLoad", () => Load0Avg[1]);
+				this.AttachDelegate("RL0AvgLoad", () => Load0Avg[2]);
+				this.AttachDelegate("RR0AvgLoad", () => Load0Avg[3]);
+				this.AttachDelegate("FLEstLoad", () => EstFL);
+				this.AttachDelegate("FREstLoad", () => EstFR);
+				this.AttachDelegate("RLEstLoad", () => EstRL);
+				this.AttachDelegate("RREstLoad", () => EstRR);
+				this.AttachDelegate("RRfiltered", () => FiltRR);
+				this.AttachDelegate("RLfiltered", () => FiltRL);
+				this.AttachDelegate("FRfiltered", () => FiltFR);
+				this.AttachDelegate("FLfiltered", () => FiltFL);
+			}
 
 			// Load settings
 			Settings = this.ReadCommonSettings<Settings>("GeneralSettings", () => new Settings());
@@ -133,15 +163,16 @@ namespace blekenbleu.loaded
 			{
 				Settings.Gain += Settings.Gain >> 3;
 				SimHub.Logging.Current.Info(LeftMenuTitle + $"Gain {Settings.Gain}");
+				View.gl.Title = $"Load gain = {Settings.Gain:##0.00}";
 			});
 
 			// Declare an action which can be called
 			this.AddAction("DecrementGain", (a, b) =>
 			{
 				Settings.Gain -= Settings.Gain >> 3;
-				if (10 > Settings.Gain)
-					Settings.Gain = 10;
-				SimHub.Logging.Current.Info(LeftMenuTitle + $"Gain {Settings.Gain}");
+				if (1 > Settings.Gain)
+					Settings.Gain = 1;
+				View.gl.Title = $"Load gain = {Settings.Gain:##0.00}";
 			});
 		}
 	}
