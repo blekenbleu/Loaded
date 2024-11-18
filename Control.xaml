@@ -1,43 +1,41 @@
 ﻿<UserControl x:Class="blekenbleu.loaded.Control"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:blekenbleu.loaded"
-             xmlns:styles="clr-namespace:SimHub.Plugins.Styles;assembly=SimHub.Plugins"
-             mc:Ignorable="d"
-             xmlns:ui="clr-namespace:SimHub.Plugins.UI;assembly=SimHub.Plugins"
-             xmlns:converter="http://metro.mahapps.com/winfx/xaml/iconpacks">
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 mc:Ignorable="d"
+			 xmlns:local="clr-namespace:blekenbleu.loaded"
+			 xmlns:styles="clr-namespace:SimHub.Plugins.Styles;assembly=SimHub.Plugins"
+			 xmlns:ui="clr-namespace:SimHub.Plugins.UI;assembly=SimHub.Plugins"
+			 d:DataContext="{d:DesignInstance Type=local:Model}"
+			 d:DesignHeight="450" d:DesignWidth="600">
+	
+	<Grid Height="450" Width="600" VerticalAlignment="Top">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition />
+				<ColumnDefinition Width="0*" />
+			</Grid.ColumnDefinitions>
 
-    <ScrollViewer>
-        
-        <Grid Height="450" Width="800" VerticalAlignment="Top">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition Width="0*" />
-            </Grid.ColumnDefinitions>
+			<styles:SHSection Title="OPTIONS" Grid.ColumnSpan="2" ShowSeparator="True" x:Name="tt">
+				<StackPanel>
+					<styles:SHSubSection Title="Load gain"/>
+					<ui:ControlsEditor FriendlyName="	Decrement Gain" ActionName="Loaded.DecrementGain"/>
+					<ui:ControlsEditor FriendlyName="	Increment Gain" ActionName="Loaded.IncrementGain"/>
 
-            <styles:SHSection Title="OPTIONS" Grid.ColumnSpan="2" ShowSeparator="True" x:Name="tt">
-                <StackPanel>
-                    <styles:SHSubSection Title="Load gain"/>
-                    <ui:ControlsEditor FriendlyName="    Decrement Gain" ActionName="Loaded.DecrementGain"/>
-                    <ui:ControlsEditor FriendlyName="    Increment Gain" ActionName="Loaded.IncrementGain"/>
-
-                    <styles:SHSubSection Title="Deflection calibration controls:  idle upper limits"/>
-                    <ui:TitledSlider Title="     speed threshold"
-									 TickFrequency = "1" IsSnapToTickEnabled = "True"
+					<styles:SHSubSection Title="Deflection calibration controls:  idle upper limits"/>
+					<ui:TitledSlider Title="	 speed threshold"
 									 Value="{Binding Thresh_sv, Mode=TwoWay}"
-                                     Maximum="50" Minimum="0" x:Name="sv"/>
-                    <ui:TitledSlider Title="     surge threshold - will be multiplied by 0.01"
+									 TickFrequency = "1" IsSnapToTickEnabled = "True"
+									 Maximum="50" Minimum="0" x:Name="sv"/>
+					<ui:TitledSlider Title="	 surge threshold - will be multiplied by 0.01"
 									 Value="{Binding Thresh_ss, Mode=TwoWay}"
 									 TickFrequency = "1" IsSnapToTickEnabled = "True"
-                                     Maximum="50" Minimum="0" x:Name="ss"/>
-                    <ui:TitledSlider Title="     heave threshold - will be multiplied by 0.01"
+									 Maximum="50" Minimum="0" x:Name="ss"/>
+					<ui:TitledSlider Title="	 heave threshold - will be multiplied by 0.01"
 									 Value="{Binding Thresh_sh, Mode=TwoWay}"
 									 TickFrequency = "1" IsSnapToTickEnabled = "True"
-                                     Maximum="50" Minimum="0" x:Name="sh"/>
-                </StackPanel>
-            </styles:SHSection>
-        </Grid>
-    </ScrollViewer>
+									 Maximum="50" Minimum="0" x:Name="sh"/>
+				</StackPanel>
+			</styles:SHSection>
+		</Grid>
 </UserControl>

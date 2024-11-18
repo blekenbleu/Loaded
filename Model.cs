@@ -4,34 +4,34 @@ using System.ComponentModel;
 namespace blekenbleu.loaded
 {
 	// borrowed from Haptics Spec.cs
-    /// <summary>
-    /// Abstract base class to implement INotifyPropertyChanged interface
-    /// https://gist.github.com/itajaja/7439345
-    /// </summary>
-    public abstract class NotifyPropertyChanged : INotifyPropertyChanged
-    {
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void OnPropertyChanged(string name)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
+	/// <summary>
+	/// Abstract base class to implement INotifyPropertyChanged interface
+	/// https://gist.github.com/itajaja/7439345
+	/// </summary>
+	public abstract class NotifyPropertyChanged : INotifyPropertyChanged
+	{
+		public event PropertyChangedEventHandler PropertyChanged;
+		protected virtual void OnPropertyChanged(string name)
+		{
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+		}
 
-        protected void SetField<T>(ref T field, T value, string name)
-        {
-            if (EqualityComparer<T>.Default.Equals(field, value))
-                return;
-            field = value;
-            OnPropertyChanged(name);
-        }
+		protected void SetField<T>(ref T field, T value, string name)
+		{
+			if (EqualityComparer<T>.Default.Equals(field, value))
+				return;
+			field = value;
+			OnPropertyChanged(name);
+		}
 
-        protected void SetSpec<T>(ref T field, T value, string name)
-        {
-            if (EqualityComparer<T>.Default.Equals(field, value))
-                return;
-            field = value;
-            OnPropertyChanged(name);
-        }
-    }
+		protected void SetSpec<T>(ref T field, T value, string name)
+		{
+			if (EqualityComparer<T>.Default.Equals(field, value))
+				return;
+			field = value;
+			OnPropertyChanged(name);
+		}
+	}
 
 	public class Model : NotifyPropertyChanged	// XAML DataContext
 	{

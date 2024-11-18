@@ -14,9 +14,9 @@ namespace blekenbleu.loaded
 		Control View;
 		string GameDBText, LoadStr, DeflStr, CarId = "";
 		double LoadFL, LoadFR, LoadRL, LoadRR, DeflFL, DeflFR, DeflRL, DeflRR;
-        readonly double[] Defl0 = new double[] { 0, 0 };
-        readonly double[] Defl0Avg = new double[] { 0, 0 };
-        double Heave;
+		readonly double[] Defl0 = new double[] { 0, 0 };
+		readonly double[] Defl0Avg = new double[] { 0, 0 };
+		double Heave;
 		uint Zero = 0;
 		string[] corner, dorner;
 		public string PluginVersion = FileVersionInfo.GetVersionInfo(
@@ -102,10 +102,10 @@ namespace blekenbleu.loaded
 			SimHub.Logging.Current.Info("Starting plugin version " + PluginVersion);
 			Game(GameDBText = pluginManager.GameName);
 
-            // Declare properties available in the property list
-            // these get evaluated "on demand" (when shown or used in formulas)
-            this.AttachDelegate("Game", () => GameDBText);
-            this.AttachDelegate("Heave", () => Heave);
+			// Declare properties available in the property list
+			// these get evaluated "on demand" (when shown or used in formulas)
+			this.AttachDelegate("Game", () => GameDBText);
+			this.AttachDelegate("Heave", () => Heave);
 			this.AttachDelegate("Thresh_sh", () => 0.01 * View.Model.Thresh_sh);
 			this.AttachDelegate("Thresh_ss", () => 0.01 * View.Model.Thresh_ss);
 			this.AttachDelegate("Thresh_sv", () => View.Model.Thresh_sv);
@@ -118,7 +118,7 @@ namespace blekenbleu.loaded
 			}
 			if (null != LoadStr)
 				this.AttachDelegate("Loads", () =>
-                  $"{LoadFR:####0.0000}, {LoadFL:####0.0000}, {LoadRR:####0.0000}, {LoadRL:####0.0000}");
+				  $"{LoadFR:####0.0000}, {LoadFL:####0.0000}, {LoadRR:####0.0000}, {LoadRL:####0.0000}");
 
 			// Load settings
 			Settings = this.ReadCommonSettings<Settings>("GeneralSettings", () => new Settings());

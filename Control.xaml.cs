@@ -10,16 +10,12 @@ namespace blekenbleu.loaded
 		public Loaded Plugin { get; }
 		public Model Model { get; }		// for e.g. Binding slider values
 
-		public Control()
-		{
-			InitializeComponent();
-		}
+		public Control() =>	InitializeComponent();
 
 		public Control(Loaded plugin) : this()
 		{
 			Plugin = plugin;
-			Model = new Model();
-			DataContext = Model;
+			DataContext = Model = new Model();
 			tt.Title = "Version " + Plugin.PluginVersion + " Options";
 		}
 	}

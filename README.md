@@ -35,8 +35,7 @@ Front Right wheel load:   `loadFR = 25 + AccelerationHeave*travelFR/(travelFR + 
         public Control(Loaded plugin) : this()
         {
             Plugin = plugin;
-            Model = new Model();
-            DataContext = Model;
+            DataContext = Model = new Model();
         }
 ```
 - *reminder*:&nbsp; [**WPF Data Binding: C# INotifyPropertyChanged**](https://wellsb.com/csharp/learn/wpf-data-binding-csharp-inotifypropertychanged/)
