@@ -20,7 +20,7 @@ namespace blekenbleu.loaded
 		readonly double[] Defl0Avg = new double[] { 0, 0, 0, 0 };
 		readonly double[] Load0 = new double[] { 0, 0, 0, 0 };
 		readonly double[] Load0Avg = new double[] { 0, 0, 0, 0 };
-		double Heave, LSpeed, LSurge;
+		double Heave, LSpeed, LSurge, Drop, Rebound;
 		uint Zero = 0;
 		string[] corner, dorner;
 		public string PluginVersion = FileVersionInfo.GetVersionInfo(
@@ -60,6 +60,7 @@ namespace blekenbleu.loaded
 				return;
 
 			Heave = (double)data.NewData.AccelerationHeave;
+			Drop = - Heave;
 			LSpeed = data.NewData.SpeedLocal;
 			LSurge = (double)data.NewData.AccelerationSurge;
 			Load(pluginManager, ref data);
@@ -112,6 +113,7 @@ namespace blekenbleu.loaded
 			// these get evaluated "on demand" (when shown or used in formulas)
 			this.AttachDelegate("Game", () => GameDBText);
 			this.AttachDelegate("Heave", () => $"{Heave:0.000}");
+			this.AttachDelegate("Drop", () => $"{Drop:0.000}");
 			this.AttachDelegate("Speed, Surge", () => $"{LSpeed:#0.0}, {LSurge:0.000}");
 			this.AttachDelegate("Thresh_sh", () => 0.01 * View.Model.Thresh_sh);
 			this.AttachDelegate("Thresh_ss", () => 0.01 * View.Model.Thresh_ss);
@@ -127,8 +129,9 @@ namespace blekenbleu.loaded
 				this.AttachDelegate("RL0AvgDefl", () => Defl0Avg[2]);
 				this.AttachDelegate("RR0AvgDefl", () => Defl0Avg[3]);
 				this.AttachDelegate("Count0", () => Zero);
-				this.AttachDelegate("Deflection delta", () => DeflRL + DeflRR + DeflFL + DeflFR
-												 - Defl0Avg[0] - Defl0Avg[1] - Defl0Avg[2] - Defl0Avg[3]);
+				this.AttachDelegate("Deflection delta", () => (Rebound = DeflRL + DeflRR + DeflFL + DeflFR
+												 - Defl0Avg[0] - Defl0Avg[1] - Defl0Avg[2] - Defl0Avg[3]));
+				this.AttachDelegate("Rebound", () => - Rebound);
 			}
 			if (null != LoadStr)
 			{
