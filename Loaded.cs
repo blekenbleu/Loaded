@@ -14,14 +14,8 @@ namespace blekenbleu.loaded
 		Control View;
 		string GameDBText, LoadStr, DeflStr, CarId = "";
 		double LoadFL, LoadFR, LoadRL, LoadRR, DeflFL, DeflFR, DeflRL, DeflRR;
-		double EstFL, EstFR, EstRL, EstRR;
-		double FiltFL, FiltFR, FiltRR, FiltRL;
-		readonly double[] Defl0 = new double[] { 0, 0, 0, 0 };
-		readonly double[] Defl0Avg = new double[] { 0, 0, 0, 0 };
-		readonly double[] Load0 = new double[] { 0, 0, 0, 0 };
-		readonly double[] Load0Avg = new double[] { 0, 0, 0, 0 };
-		double Heave, LSpeed, LSurge, Drop, Rebound;
-		uint Zero = 0;
+		double Defl, Loads;
+		double Heave, LSpeed, LSurge;
 		string[] corner, dorner;
 		public string PluginVersion = FileVersionInfo.GetVersionInfo(
 			Assembly.GetExecutingAssembly().Location).FileVersion.ToString(); 
@@ -60,22 +54,9 @@ namespace blekenbleu.loaded
 				return;
 
 			Heave = (double)data.NewData.AccelerationHeave;
-			Drop = - Heave;
 			LSpeed = data.NewData.SpeedLocal;
 			LSurge = (double)data.NewData.AccelerationSurge;
 			Load(pluginManager, ref data);
-			/* Capture suspension travel values when speed and heave are 0
-			 ; changes from those values should correlate to changes in load
-			 ; changes from average (total) should correlate to heave
-			 ; rescale average suspension travel by heave to normalize loads
-			 ; front and rear suspension spring rates typically differ...
-			 */
-
-			if (data.OldData.SpeedKmh < Settings.Gain && data.OldData.SpeedKmh >= Settings.Gain)
-			{
-				// Trigger an event
-				this.TriggerEvent("GainChange");
-			}
 		}
 
 		/// <summary>
@@ -113,7 +94,6 @@ namespace blekenbleu.loaded
 			// these get evaluated "on demand" (when shown or used in formulas)
 			this.AttachDelegate("Game", () => GameDBText);
 			this.AttachDelegate("Heave", () => $"{Heave:0.000}");
-			this.AttachDelegate("Drop", () => $"{Drop:0.000}");
 			this.AttachDelegate("Speed, Surge", () => $"{LSpeed:#0.0}, {LSurge:0.000}");
 			this.AttachDelegate("Thresh_sh", () => 0.01 * View.Model.Thresh_sh);
 			this.AttachDelegate("Thresh_ss", () => 0.01 * View.Model.Thresh_ss);
@@ -124,14 +104,7 @@ namespace blekenbleu.loaded
 				this.AttachDelegate("FRdefl", () => DeflFR);
 				this.AttachDelegate("RLdefl", () => DeflRL);
 				this.AttachDelegate("RRdefl", () => DeflRR);
-				this.AttachDelegate("FL0AvgDefl", () => Defl0Avg[0]);
-				this.AttachDelegate("FR0AvgDefl", () => Defl0Avg[1]);
-				this.AttachDelegate("RL0AvgDefl", () => Defl0Avg[2]);
-				this.AttachDelegate("RR0AvgDefl", () => Defl0Avg[3]);
-				this.AttachDelegate("Count0", () => Zero);
-				this.AttachDelegate("Deflection delta", () => (Rebound = DeflRL + DeflRR + DeflFL + DeflFR
-												 - Defl0Avg[0] - Defl0Avg[1] - Defl0Avg[2] - Defl0Avg[3]));
-				this.AttachDelegate("Rebound", () => - Rebound);
+				this.AttachDelegate("Defl", () => Defl);
 			}
 			if (null != LoadStr)
 			{
@@ -139,18 +112,7 @@ namespace blekenbleu.loaded
 				this.AttachDelegate("FLload", () => LoadFL);
 				this.AttachDelegate("RRload", () => LoadRR);
 				this.AttachDelegate("RLload", () => LoadRL);
-				this.AttachDelegate("FL0AvgLoad", () => Load0Avg[0]);
-				this.AttachDelegate("FR0AvgLoad", () => Load0Avg[1]);
-				this.AttachDelegate("RL0AvgLoad", () => Load0Avg[2]);
-				this.AttachDelegate("RR0AvgLoad", () => Load0Avg[3]);
-				this.AttachDelegate("FLEstLoad", () => EstFL);
-				this.AttachDelegate("FREstLoad", () => EstFR);
-				this.AttachDelegate("RLEstLoad", () => EstRL);
-				this.AttachDelegate("RREstLoad", () => EstRR);
-				this.AttachDelegate("RRfiltered", () => FiltRR);
-				this.AttachDelegate("RLfiltered", () => FiltRL);
-				this.AttachDelegate("FRfiltered", () => FiltFR);
-				this.AttachDelegate("FLfiltered", () => FiltFL);
+				this.AttachDelegate("Load", () => Loads);
 			}
 
 			// Load settings
