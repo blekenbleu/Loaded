@@ -15,7 +15,7 @@ namespace blekenbleu.loaded
 		string GameDBText, LoadStr, DeflStr, CarId = "";
 		double LoadFL, LoadFR, LoadRL, LoadRR, DeflFL, DeflFR, DeflRL, DeflRR;
 		double Defl, Loads;
-		double Heave, LSpeed, LSurge;
+		double Heave, LSpeed, LSurge = 0, Roll = 0, DRoll = 0, Pitch = 0, DPitch = 0;
 		string[] corner, dorner;
 		public string PluginVersion = FileVersionInfo.GetVersionInfo(
 			Assembly.GetExecutingAssembly().Location).FileVersion.ToString(); 
@@ -56,6 +56,12 @@ namespace blekenbleu.loaded
 			Heave = (double)data.NewData.AccelerationHeave;
 			LSpeed = data.NewData.SpeedLocal;
 			LSurge = (double)data.NewData.AccelerationSurge;
+			DRoll = Roll;
+			Roll = (double)data.NewData.OrientationRoll;
+			DRoll -= Roll;
+			DPitch = Pitch;
+			Pitch = (double)data.NewData.OrientationPitch;
+			DPitch =- Pitch;
 			Load(pluginManager, ref data);
 		}
 
@@ -98,13 +104,20 @@ namespace blekenbleu.loaded
 			this.AttachDelegate("Thresh_sh", () => 0.01 * View.Model.Thresh_sh);
 			this.AttachDelegate("Thresh_ss", () => 0.01 * View.Model.Thresh_ss);
 			this.AttachDelegate("Thresh_sv", () => View.Model.Thresh_sv);
+			this.AttachDelegate("DRoll", () => DRoll);
+			this.AttachDelegate("DPitch", () => DPitch);
 			if (null != DeflStr)
 			{
 				this.AttachDelegate("FLdefl", () => DeflFL);
 				this.AttachDelegate("FRdefl", () => DeflFR);
 				this.AttachDelegate("RLdefl", () => DeflRL);
 				this.AttachDelegate("RRdefl", () => DeflRR);
-				this.AttachDelegate("Defl", () => Defl);
+				this.AttachDelegate("Defl", () => (DeflFL + DeflFR + DeflRL + DeflRR) / 4);
+				this.AttachDelegate("DeflPitch", () => (DeflFL + DeflFR - (DeflRL + DeflRR)));
+				this.AttachDelegate("DeflRollF", () => (DeflFL - DeflFR));
+				this.AttachDelegate("DeflRollR", () => (DeflRL - DeflRR));
+				this.AttachDelegate("DeflHeaveR", () => (DeflRL + DeflRR) / 2);
+				this.AttachDelegate("DeflHeaveF", () => (DeflFL + DeflFR) / 2);
 			}
 			if (null != LoadStr)
 			{
