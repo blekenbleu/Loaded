@@ -1,5 +1,6 @@
 ﻿using GameReaderCommon;
 using SimHub.Plugins;
+using System;
 using System.Diagnostics;
 using System.Reflection;
 using System.Windows.Media;
@@ -93,7 +94,7 @@ namespace blekenbleu.loaded
 		/// <param name="pluginManager"></param>
 		public void Init(PluginManager pluginManager)
 		{
-			SimHub.Logging.Current.Info("Starting plugin version " + PluginVersion);
+			SimHub.Logging.Current.Info("Starting " + LeftMenuTitle);
 			Game(GameDBText = pluginManager.GameName);
 
 			// Declare properties available in the property list
@@ -139,18 +140,30 @@ namespace blekenbleu.loaded
 			// Declare an action which can be called
 			this.AddAction("IncrementGain",(a, b) =>
 			{
-				Settings.Gain += Settings.Gain >> 3;
+				int bump = Settings.Gain >> 3;
+
+				if (1 > bump)
+					bump = 1;
+                Settings.Gain += bump;
 				SimHub.Logging.Current.Info(LeftMenuTitle + $"Gain {Settings.Gain}");
-				View.gl.Title = $"Load gain = {Settings.Gain:##0.00}";
+				View.Dispatcher.Invoke((Action)(() =>
+					{ View.gl.Title = $"Load gain = {Settings.Gain:##0.00}"; }
+				));
 			});
 
 			// Declare an action which can be called
 			this.AddAction("DecrementGain", (a, b) =>
 			{
-				Settings.Gain -= Settings.Gain >> 3;
+				int bump = Settings.Gain >> 3;
+
+				if (1 > bump)
+					bump = 1;
+				Settings.Gain -= bump;
 				if (1 > Settings.Gain)
 					Settings.Gain = 1;
-				View.gl.Title = $"Load gain = {Settings.Gain:##0.00}";
+				View.Dispatcher.Invoke((Action)(() =>
+					{ View.gl.Title = $"Load gain = {Settings.Gain:##0.00}"; }
+				));
 			});
 		}
 	}
