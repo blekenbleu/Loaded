@@ -10,7 +10,7 @@
 			 d:DataContext="{d:DesignInstance Type=local:Model}"
 			 d:DesignHeight="500" d:DesignWidth="600">
 	
-	<Grid Height="500" Width="600" VerticalAlignment="Top">
+	<Grid Width="600" VerticalAlignment="Top">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition />
 				<ColumnDefinition Width="0*" />
@@ -39,6 +39,10 @@
 									 Value="{Binding Filter_L, Mode=TwoWay}"
 									 TickFrequency = "1" IsSnapToTickEnabled = "True"
 									 Maximum="50" Minimum="1" x:Name="fl"/>
+					<ui:TitledSlider Title="	 YawVelocity gain"
+									 Value="{Binding YawVelGain, Mode=TwoWay}"
+									 TickFrequency = "1" IsSnapToTickEnabled = "True"
+									 Maximum="90" Minimum="1" x:Name="yg"/>
 				</StackPanel>
 			</styles:SHSection>
 		</Grid>

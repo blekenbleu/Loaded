@@ -39,19 +39,43 @@ namespace blekenbleu.loaded
 					DeflRR = Convert.ToDouble(pluginManager.GetPropertyValue(DeflStr+corner[2]));
 					DeflRL = Convert.ToDouble(pluginManager.GetPropertyValue(DeflStr+corner[3]));
 				}
-				if (CarId != data.NewData.CarId)
-				{
-					CarId = data.NewData.CarId;
-				}
 				Defl = DeflFL + DeflFR + DeflRL + DeflRR;
 				if (null != LoadStr)
 					Loads = LoadFL + LoadFR + LoadRL + LoadRR;
 			}
 		}
 
-		internal double Filter(double dold, double factor, double dnew)
+		double oldyaw = 0;
+		internal double DiffYawSway(double yaw, double sway)
 		{
-			return dold + (dnew - dold) / factor;
+			double ayaw = Math.Abs(yaw);
+			double asway = Math.Abs(sway);
+			if (ayaw > 2 * asway)
+				return Math.Abs(oldyaw) - asway;
+			oldyaw = yaw;
+			double diff = ayaw - asway;
+			if (4 > asway)
+			{
+				LPfilter(ref LPdiff, 10, diff);
+				if (1 < LPdiff && 1 < View.Model.YawVelGain)
+					YVgain -= 0.1;
+				else if (-1 > LPdiff && 90 > View.Model.YawVelGain)
+					YVgain +=  0.1;
+				View.Model.YawVelGain = (int)(0.5 * YVgain);
+			}
+			return diff;
+		}
+
+		internal double LPfilter(ref double dold, double factor, double dnew)
+		{
+			dold += (dnew - dold) / factor;
+			return dold;
+		}
+
+		internal double HPfilter(ref double dold, double factor, double dnew)
+		{
+			dold += (dnew - dold) / factor;
+			return dnew - dold;
 		}
 	}
 }

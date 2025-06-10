@@ -5,6 +5,8 @@
 	/// </summary>
 	public class Settings
 	{
-		public int Gain = 100;
+		public int Gain = 100, YawVelGain = 25;
+		public short Thresh_sv = 3, Thresh_sh = 15, Thresh_ss = 15;
+		public short Filter_L = 15;
 	}
 }

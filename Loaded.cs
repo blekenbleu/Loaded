@@ -13,10 +13,10 @@ namespace blekenbleu.loaded
 	public partial class Loaded : IPlugin, IDataPlugin, IWPFSettingsV2
 	{
 		Control View;
-		string GameDBText, LoadStr, DeflStr, CarId = "";
+		string GameDBText, LoadStr, DeflStr;
 		double LoadFL, LoadFR, LoadRL, LoadRR, DeflFL, DeflFR, DeflRL, DeflRR;
-		double Defl, Loads;
-		double Heave, LSpeed, LSurge = 0, Roll = 0, DRoll = 0, Pitch = 0, DPitch = 0;
+		double Defl, Loads, SwayOld = 0, SwayLP = 0, YawVsway = 0, LPdiff = 0, YVgain = 1;
+		double Heave, LSpeed, YawVel = 0, LSurge = 0, Roll = 0, DRoll = 0, Pitch = 0, DPitch = 0;
 		string[] corner, dorner;
 		public string PluginVersion = FileVersionInfo.GetVersionInfo(
 			Assembly.GetExecutingAssembly().Location).FileVersion.ToString(); 
@@ -63,6 +63,9 @@ namespace blekenbleu.loaded
 			DPitch = Pitch;
 			Pitch = (double)data.NewData.OrientationPitch;
 			DPitch =- Pitch;
+			SwayLP = LPfilter(ref SwayOld, View.Model.Filter_L, (double)data.NewData.AccelerationSway);
+			YawVel = View.Model.YawVelGain * 0.01 * (double)data.NewData.OrientationYawVelocity;
+			YawVsway = DiffYawSway(YawVel, (double)data.NewData.AccelerationSway);
 			Load(pluginManager, ref data);
 		}
 
@@ -74,6 +77,11 @@ namespace blekenbleu.loaded
 		public void End(PluginManager pluginManager)
 		{
 			// Save settings
+			Settings.YawVelGain = View.Model.YawVelGain;
+			Settings.Thresh_sv = View.Model.Thresh_sv;
+			Settings.Thresh_sh = View.Model.Thresh_sh;
+			Settings.Thresh_ss = View.Model.Thresh_ss;
+			Settings.Filter_L = View.Model.Filter_L;
 			this.SaveCommonSettings("GeneralSettings", Settings);
 		}
 
@@ -107,6 +115,9 @@ namespace blekenbleu.loaded
 			this.AttachDelegate("Thresh_sv", () => View.Model.Thresh_sv);
 			this.AttachDelegate("DRoll", () => DRoll);
 			this.AttachDelegate("DPitch", () => DPitch);
+			this.AttachDelegate("LPdiff", () => LPdiff);
+			this.AttachDelegate("YawVelocity", () => oldyaw);
+			this.AttachDelegate("YawVsway", () => YawVsway);
 			if (null != DeflStr)
 			{
 				this.AttachDelegate("FLdefl", () => DeflFL);
@@ -131,6 +142,7 @@ namespace blekenbleu.loaded
 
 			// Load settings
 			Settings = this.ReadCommonSettings<Settings>("GeneralSettings", () => new Settings());
+			YVgain = Settings.YawVelGain;
 
 			this.AttachDelegate("Gain", () => Settings.Gain);
 

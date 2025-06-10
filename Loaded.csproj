@@ -18,6 +18,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
+    <OutputPath>bin\$(Configuration)\</OutputPath>
     <OutDir>$(SIMHUB_INSTALL_PATH)</OutDir>
     <Optimize>false</Optimize>
     <DefineConstants>DEBUG;TRACE</DefineConstants>

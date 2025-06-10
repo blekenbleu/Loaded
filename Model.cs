@@ -35,32 +35,39 @@ namespace blekenbleu.loaded
 
 	public class Model : NotifyPropertyChanged	// XAML DataContext
 	{
-		private double thresh_sv = 3;
-		public double Thresh_sv
+		private short thresh_sv = 3;
+		public short Thresh_sv
 		{
 			get => thresh_sv;
 			set { SetField(ref thresh_sv, value, nameof(Thresh_sv)); }
 		}
 
-		private double thresh_sh = 15;
-		public double Thresh_sh
+		private short thresh_sh = 15;
+		public short Thresh_sh
 		{
 			get => thresh_sh;
 			set { SetField(ref thresh_sh, value, nameof(Thresh_sh)); }
 		}
 
-		private double thresh_ss = 15;
-		public double Thresh_ss
+		private short thresh_ss = 15;
+		public short Thresh_ss
 		{
 			get => thresh_ss;
 			set { SetField(ref thresh_ss, value, nameof(Thresh_ss)); }
 		}
 
-		private double filter_L = 15;
-		public double Filter_L
+		private short filter_L = 15;
+		public short Filter_L
 		{
 			get => filter_L;
 			set { SetField(ref filter_L, value, nameof(Filter_L)); }
+		}
+
+		private int yawVelGain = 20;
+		public int YawVelGain
+		{
+			get => yawVelGain;
+			set { SetField(ref yawVelGain, value, nameof(YawVelGain)); }
 		}
 	}
 }
