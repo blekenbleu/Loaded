@@ -16,7 +16,7 @@ Proposed new wheel load estimation:
 	`(per-wheel suspension travel) / (sum of suspension travels)`
 
 Example:  
-Front Right wheel load:   `loadFR = 25 + AccelerationHeave*travelFR/(travelFR + travelFL + travelRR + travelRL)`  
+Front Right wheel load:   `loadFR = 25 + Loaded.Heave*Loaded.FRdefl/(Loaded.FRdefl + Loaded.FLdefl + Loaded.RRdefl + Loaded.RLdefl)`
 - different games have different property names for suspension travel;  
 	unclear whether any iRacing properties correspond to suspension travel...
 
