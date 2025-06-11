@@ -15,7 +15,8 @@ namespace blekenbleu.loaded
 		Control View;
 		string GameDBText, LoadStr, DeflStr;
 		double LoadFL, LoadFR, LoadRL, LoadRR, DeflFL, DeflFR, DeflRL, DeflRR;
-		double Defl, Loads, SwayOld = 0, SwayLP = 0, YawVsway = 0, LPdiff = 0, YVgain = 1;
+		double LPdiff = 0, LPyaw = 0, LPsway = 0;
+		double Defl, Loads, YawVsway = 0;
 		double Heave, LSpeed, YawVel = 0, LSurge = 0, Roll = 0, DRoll = 0, Pitch = 0, DPitch = 0;
 		string[] corner, dorner;
 		public string PluginVersion = FileVersionInfo.GetVersionInfo(
@@ -63,7 +64,6 @@ namespace blekenbleu.loaded
 			DPitch = Pitch;
 			Pitch = (double)data.NewData.OrientationPitch;
 			DPitch =- Pitch;
-			SwayLP = LPfilter(ref SwayOld, View.Model.Filter_L, (double)data.NewData.AccelerationSway);
 			YawVel = View.Model.YawVelGain * 0.01 * (double)data.NewData.OrientationYawVelocity;
 			YawVsway = DiffYawSway(YawVel, (double)data.NewData.AccelerationSway);
 			Load(pluginManager, ref data);
@@ -142,7 +142,6 @@ namespace blekenbleu.loaded
 
 			// Load settings
 			Settings = this.ReadCommonSettings<Settings>("GeneralSettings", () => new Settings());
-			YVgain = Settings.YawVelGain;
 
 			this.AttachDelegate("Gain", () => Settings.Gain);
 
