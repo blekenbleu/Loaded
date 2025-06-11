@@ -14,7 +14,9 @@ Wikipedia:&nbsp; ["Understeer Angle is the amount of additional steering (at roa
 
 ## Assetto Corsa provides wheel slip telemetry for alternative (1):
 `DataCorePlugin.GameRawData.Physics.WheelSlip04 + DataCorePlugin.GameRawData.Physics.WheelSlip03 -
-(DataCorePlugin.GameRawData.Physics.WheelSlip02 + DataCorePlugin.GameRawData.Physics.WheelSlip01)`
+(DataCorePlugin.GameRawData.Physics.WheelSlip02 + DataCorePlugin.GameRawData.Physics.WheelSlip01)`  
+At least one issue:&nbsp; locked brakes in a straight line presents as massive over- or  understeer,  
+ &emsp; &emsp; depending on which end locks up first/most.
 
 ## SimHub telemetry for alternative (3):
 `AccelerationSway - rescale * OrientationYawVelocity`  

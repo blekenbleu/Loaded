@@ -79,5 +79,12 @@ namespace blekenbleu.loaded
 			dold += (dnew - dold) / factor;
 			return dnew - dold;
 		}
+
+		double Slip(PluginManager pluginManager, char corner)
+		{
+			string raw = "DataCorePlugin.GameRawData.Physics.WheelSlip0" + corner;
+			var slip = pluginManager.GetPropertyValue(raw);
+			return (null == slip) ? 0 : Convert.ToDouble(slip);
+		}
 	}
 }

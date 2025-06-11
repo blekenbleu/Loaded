@@ -15,9 +15,10 @@ namespace blekenbleu.loaded
 		Control View;
 		string GameDBText, LoadStr, DeflStr;
 		double LoadFL, LoadFR, LoadRL, LoadRR, DeflFL, DeflFR, DeflRL, DeflRR;
-		double LPdiff = 0, LPyaw = 0, LPsway = 0;
-		double Defl, Loads, YawVsway = 0;
-		double Heave, LSpeed, YawVel = 0, LSurge = 0, Roll = 0, DRoll = 0, Pitch = 0, DPitch = 0;
+		double LPdiff = 0, LPyaw = 0, LPsway = 0, YawVsway = 0, YawVel = 0;
+		double ACsumFRslip = 0, ACprodFRslip = 0, Rangerover = 0;
+		double Defl, Loads, Heave, LSpeed;
+		double LSurge = 0, Roll = 0, DRoll = 0, Pitch = 0, DPitch = 0;
 		string[] corner, dorner;
 		public string PluginVersion = FileVersionInfo.GetVersionInfo(
 			Assembly.GetExecutingAssembly().Location).FileVersion.ToString(); 
@@ -67,6 +68,20 @@ namespace blekenbleu.loaded
 			YawVel = View.Model.YawVelGain * 0.01 * (double)data.NewData.OrientationYawVelocity;
 			YawVsway = DiffYawSway(YawVel, (double)data.NewData.AccelerationSway);
 			Load(pluginManager, ref data);
+			if (GameDBText == "AssettoCorsa")
+			{
+				ACsumFRslip = ACprodFRslip = Slip(pluginManager, '4');
+				double stuff = Slip(pluginManager, '3');
+				ACsumFRslip += stuff;
+				ACprodFRslip *= stuff;
+				stuff = Slip(pluginManager, '2');
+				ACsumFRslip -= stuff;
+				double one = Slip(pluginManager, '1');
+				ACsumFRslip -= one;
+				stuff *= one;
+				ACprodFRslip -= stuff;
+			}
+			Rangerover = RangeRover(pluginManager, ref data);
 		}
 
 		/// <summary>
@@ -118,6 +133,9 @@ namespace blekenbleu.loaded
 			this.AttachDelegate("LPdiff", () => LPdiff);
 			this.AttachDelegate("YawVelocity", () => oldyaw);
 			this.AttachDelegate("YawVsway", () => YawVsway);
+			this.AttachDelegate("ACsumFRslip", () => ACsumFRslip);
+			this.AttachDelegate("ACprodFRslip", () => ACprodFRslip);
+			this.AttachDelegate("Rangerover", () => Rangerover);
 			if (null != DeflStr)
 			{
 				this.AttachDelegate("FLdefl", () => DeflFL);
