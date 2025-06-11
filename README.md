@@ -29,7 +29,7 @@ Front Right wheel load:   `loadFR = 25 + Loaded.Heave*Loaded.FRdefl/(Loaded.FRde
 
 ## Observations
 - Acceleratioin Sway and OrientationYawVelocity are comparable
-	- if scaled approx 1:2, differences estimate understeer and oversteer
+	- if scaled approx 1:2, [**differences estimate understeer and oversteer**](oversteer.md)
 	- added YawVelocity Gain to adaptively match small Sway and Yaw amplitudes
 	- rescaled YawVelocity tries to ignore spikes in SimHub OrientationYawVelocity values
 	- save and restore all slider values
