@@ -8,6 +8,15 @@ Wikipedia:&nbsp; ["Understeer Angle is the amount of additional steering (at roa
 [![](Properties/oversteer.jpg)](https://kogarahtyrepower.com.au/news/1944-tyrepower-kogarah-explains-oversteering-and-understeering)  
  &emsp; *by that definition, B and D  would represent understeer*  
 
+## [lateral acceleration = tangential speed × yaw velocity](https://boltflight.com/understanding-yaw-the-crucial-axis-of-rotational-motion-in-vehicles-and-aircraft/)
+- yaw velocity is already *vehicle attitude* angular velocity;  
+  lateral acceleration (sway acceleration) / vehicle speed becomes *vehicle trajectory* angular velocity  
+- difference between attitude and trajectory angular velocity represents (rear wheel) slip angle
+- difference between steering angle and net attitude and trajectory angle becomes front wheel slip angle
+
+[**Front tire slip = steering angle - (yaw velocity + (lateral acceleration / tangential speed))**](https://vtechworks.lib.vt.edu/server/api/core/bitstreams/fe6d4ca1-514b-4e2b-b1ac-6561824a9de1/content)  
+**Rear Tire Slip  = yaw velocity - (lateral acceleration / tangential speed)**
+
 - alternative (1) for oversteer:&nbsp; more slip at rear tires than front  
 - alternative (2):&nbsp; vehicle yaw relative to vehicle direction (B, C, D, E)
 - alternative (3):&nbsp; vehicle *yaw rate* relative to lateral acceleration  

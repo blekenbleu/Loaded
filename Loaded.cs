@@ -13,12 +13,6 @@ namespace blekenbleu.loaded
 	public partial class Loaded : IPlugin, IDataPlugin, IWPFSettingsV2
 	{
 		Control View;
-		string GameDBText, LoadStr, DeflStr;
-		double LoadFL, LoadFR, LoadRL, LoadRR, DeflFL, DeflFR, DeflRL, DeflRR;
-		double LPdiff = 0, LPyaw = 0, LPsway = 0, YawVsway = 0, YawVel = 0;
-		double ACsumFRslip = 0, ACprodFRslip = 0, Rangerover = 0;
-		double Defl, Loads, Heave, LSpeed;
-		double LSurge = 0, Roll = 0, DRoll = 0, Pitch = 0, DPitch = 0;
 		string[] corner, dorner;
 		public string PluginVersion = FileVersionInfo.GetVersionInfo(
 			Assembly.GetExecutingAssembly().Location).FileVersion.ToString(); 
@@ -40,6 +34,19 @@ namespace blekenbleu.loaded
 		/// </summary>
 		public string LeftMenuTitle => "Loaded " + PluginVersion;
 
+		PluginManager pm;
+
+		double Prop(string parm)
+		{
+			var value = pm.GetPropertyValue(parm);
+			if (null == value)
+			{
+				oops = $"Prop({parm}):  null value";
+				return 0;
+			}
+			return Convert.ToDouble(value);
+		}
+
 		/// <summary>
 		/// Called one time per game data update, contains all normalized game data,
 		/// raw data are intentionnally "hidden" under a generic object type (A plugin SHOULD NOT USE IT)
@@ -55,34 +62,37 @@ namespace blekenbleu.loaded
 			// Define the value of our property (declared in init)
 			if (!data.GameRunning || null == data.OldData || null == data.NewData)
 				return;
-
-			Heave = (double)data.NewData.AccelerationHeave;
-			LSpeed = data.NewData.SpeedLocal;
-			LSurge = (double)data.NewData.AccelerationSurge;
-			DRoll = Roll;
-			Roll = (double)data.NewData.OrientationRoll;
-			DRoll -= Roll;
-			DPitch = Pitch;
-			Pitch = (double)data.NewData.OrientationPitch;
-			DPitch =- Pitch;
-			YawVel = View.Model.YawVelGain * 0.01 * (double)data.NewData.OrientationYawVelocity;
-			YawVsway = DiffYawSway(YawVel, (double)data.NewData.AccelerationSway);
-			Load(pluginManager, ref data);
-			if (GameDBText == "AssettoCorsa")
+			try
 			{
-				ACsumFRslip = ACprodFRslip = Slip(pluginManager, '4');
-				double stuff = Slip(pluginManager, '3');
-				ACsumFRslip += stuff;
-				ACprodFRslip *= stuff;
-				stuff = Slip(pluginManager, '2');
-				ACsumFRslip -= stuff;
-				double one = Slip(pluginManager, '1');
-				ACsumFRslip -= one;
-				stuff *= one;
-				ACprodFRslip -= stuff;
-			}
-			Rangerover = RangeRover(pluginManager, ref data);
-		}
+				pm = pluginManager;
+				Heave = data.NewData.AccelerationHeave ?? 0;
+				LSpeed = data.NewData.SpeedLocal;
+				LSurge = data.NewData.AccelerationSurge ?? 0;
+				var old = Pitch;
+				Pitch = data.NewData.OrientationPitch;
+                DPitch = Pitch - old;
+				old = Roll;
+				Roll = data.NewData.OrientationRoll;
+				DRoll = Roll - old;
+                SpeedKmh = data.NewData.SpeedKmh;
+				SwayAcc = data.NewData.AccelerationSway ?? 0;
+				SwayRate = (5 < SpeedKmh) ? SwayAcc / SpeedKmh : 0;
+				YawVel = View.Model.YawVelGain * 0.01 * data.NewData.OrientationYawVelocity;
+
+				// game-specific properties
+				Steering = Prop(Psteer);
+				// Local velocities in metres per second
+				Vsway = Prop(Psway);
+				YawRate = Prop(Pyaw);  // Angular velocities in radians per second
+				Load();
+				if (GameDBText == "AssettoCorsa")
+					ACprodFRslip = Slip('4') * Slip('3') - Slip('2') * Slip('1');
+			} catch (Exception e)
+			{
+                string oops = e?.ToString();
+                SimHub.Logging.Current.Info("DataUpdate() Failed: " + oops);
+            }
+        }
 
 		/// <summary>
 		/// Called at plugin manager stop, close/dispose anything needed here !
@@ -120,48 +130,9 @@ namespace blekenbleu.loaded
 			SimHub.Logging.Current.Info("Starting " + LeftMenuTitle);
 			Game(GameDBText = pluginManager.GameName);
 
-			// Declare properties available in the property list
-			// these get evaluated "on demand" (when shown or used in formulas)
-			this.AttachDelegate("Game", () => GameDBText);
-			this.AttachDelegate("Heave", () => $"{Heave:0.000}");
-			this.AttachDelegate("Speed, Surge", () => $"{LSpeed:#0.0}, {LSurge:0.000}");
-			this.AttachDelegate("Thresh_sh", () => 0.01 * View.Model.Thresh_sh);
-			this.AttachDelegate("Thresh_ss", () => 0.01 * View.Model.Thresh_ss);
-			this.AttachDelegate("Thresh_sv", () => View.Model.Thresh_sv);
-			this.AttachDelegate("DRoll", () => DRoll);
-			this.AttachDelegate("DPitch", () => DPitch);
-			this.AttachDelegate("LPdiff", () => LPdiff);
-			this.AttachDelegate("YawVelocity", () => oldyaw);
-			this.AttachDelegate("YawVsway", () => YawVsway);
-			this.AttachDelegate("ACsumFRslip", () => ACsumFRslip);
-			this.AttachDelegate("ACprodFRslip", () => ACprodFRslip);
-			this.AttachDelegate("Rangerover", () => Rangerover);
-			if (null != DeflStr)
-			{
-				this.AttachDelegate("FLdefl", () => DeflFL);
-				this.AttachDelegate("FRdefl", () => DeflFR);
-				this.AttachDelegate("RLdefl", () => DeflRL);
-				this.AttachDelegate("RRdefl", () => DeflRR);
-				this.AttachDelegate("Defl", () => (DeflFL + DeflFR + DeflRL + DeflRR) / 4);
-				this.AttachDelegate("DeflPitch", () => (DeflFL + DeflFR - (DeflRL + DeflRR)));
-				this.AttachDelegate("DeflRollF", () => (DeflFL - DeflFR));
-				this.AttachDelegate("DeflRollR", () => (DeflRL - DeflRR));
-				this.AttachDelegate("DeflHeaveR", () => (DeflRL + DeflRR) / 2);
-				this.AttachDelegate("DeflHeaveF", () => (DeflFL + DeflFR) / 2);
-			}
-			if (null != LoadStr)
-			{
-				this.AttachDelegate("FRload", () => LoadFR);
-				this.AttachDelegate("FLload", () => LoadFL);
-				this.AttachDelegate("RRload", () => LoadRR);
-				this.AttachDelegate("RLload", () => LoadRL);
-				this.AttachDelegate("Load", () => Loads);
-			}
-
 			// Load settings
 			Settings = this.ReadCommonSettings<Settings>("GeneralSettings", () => new Settings());
-
-			this.AttachDelegate("Gain", () => Settings.Gain);
+			Attach();
 
 			// Declare an event
 			this.AddEvent("GainChange");

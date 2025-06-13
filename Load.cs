@@ -6,57 +6,55 @@ namespace blekenbleu.loaded
 {
 	public partial class Loaded : IPlugin, IDataPlugin, IWPFSettingsV2
 	{
-		public void Load(PluginManager pluginManager, ref GameData data)
+		public void Load()
 		{
 			if (null != LoadStr)	// few games have load properties
 			{
 				if (null != corner)
 				{
-					LoadFR = Convert.ToDouble(pluginManager.GetPropertyValue(LoadStr+corner[0]));
-					LoadFL = Convert.ToDouble(pluginManager.GetPropertyValue(LoadStr+corner[1]));
-					LoadRR = Convert.ToDouble(pluginManager.GetPropertyValue(LoadStr+corner[2]));
-					LoadRL = Convert.ToDouble(pluginManager.GetPropertyValue(LoadStr+corner[3]));
+					LoadFR = Convert.ToDouble(pm.GetPropertyValue(LoadStr+corner[0]));
+					LoadFL = Convert.ToDouble(pm.GetPropertyValue(LoadStr+corner[1]));
+					LoadRR = Convert.ToDouble(pm.GetPropertyValue(LoadStr+corner[2]));
+					LoadRL = Convert.ToDouble(pm.GetPropertyValue(LoadStr+corner[3]));
 				}
 				else {
-					LoadFR = Convert.ToDouble(pluginManager.GetPropertyValue(LoadStr+dorner[0]));
-					LoadFL = Convert.ToDouble(pluginManager.GetPropertyValue(LoadStr+dorner[1]));
-					LoadRR = Convert.ToDouble(pluginManager.GetPropertyValue(LoadStr+dorner[2]));
-					LoadRL = Convert.ToDouble(pluginManager.GetPropertyValue(LoadStr+dorner[3]));
+					LoadFR = Convert.ToDouble(pm.GetPropertyValue(LoadStr+dorner[0]));
+					LoadFL = Convert.ToDouble(pm.GetPropertyValue(LoadStr+dorner[1]));
+					LoadRR = Convert.ToDouble(pm.GetPropertyValue(LoadStr+dorner[2]));
+					LoadRL = Convert.ToDouble(pm.GetPropertyValue(LoadStr+dorner[3]));
 				}
-			}
-			if (null != DeflStr)	// not all games handled in Init()
+                Loads = LoadFL + LoadFR + LoadRL + LoadRR;
+            }
+            if (null != DeflStr)	// not all games handled in Init()
 			{
 				if (null != dorner)
 				{
-					DeflFR = Convert.ToDouble(pluginManager.GetPropertyValue(DeflStr+dorner[0]));
-					DeflFL = Convert.ToDouble(pluginManager.GetPropertyValue(DeflStr+dorner[1]));
-					DeflRR = Convert.ToDouble(pluginManager.GetPropertyValue(DeflStr+dorner[2]));
-					DeflRL = Convert.ToDouble(pluginManager.GetPropertyValue(DeflStr+dorner[3]));
+					DeflFR = Convert.ToDouble(pm.GetPropertyValue(DeflStr+dorner[0]));
+					DeflFL = Convert.ToDouble(pm.GetPropertyValue(DeflStr+dorner[1]));
+					DeflRR = Convert.ToDouble(pm.GetPropertyValue(DeflStr+dorner[2]));
+					DeflRL = Convert.ToDouble(pm.GetPropertyValue(DeflStr+dorner[3]));
 				}
 				else {
-					DeflFR = Convert.ToDouble(pluginManager.GetPropertyValue(DeflStr+corner[0]));
-					DeflFL = Convert.ToDouble(pluginManager.GetPropertyValue(DeflStr+corner[1]));
-					DeflRR = Convert.ToDouble(pluginManager.GetPropertyValue(DeflStr+corner[2]));
-					DeflRL = Convert.ToDouble(pluginManager.GetPropertyValue(DeflStr+corner[3]));
+					DeflFR = Convert.ToDouble(pm.GetPropertyValue(DeflStr+corner[0]));
+					DeflFL = Convert.ToDouble(pm.GetPropertyValue(DeflStr+corner[1]));
+					DeflRR = Convert.ToDouble(pm.GetPropertyValue(DeflStr+corner[2]));
+					DeflRL = Convert.ToDouble(pm.GetPropertyValue(DeflStr+corner[3]));
 				}
-				Defl = DeflFL + DeflFR + DeflRL + DeflRR;
-				if (null != LoadStr)
-					Loads = LoadFL + LoadFR + LoadRL + LoadRR;
 			}
 		}
 
-		double oldyaw = 0;
-		internal double DiffYawSway(double yaw, double sway)
+		double oldyaw = 0, SwayAcc = 0, SpeedKmh = 0;
+		internal double DiffYawSway()
 		{
-			double ayaw = Math.Abs(yaw);
-			double asway = Math.Abs(sway);
-			if (ayaw > 2 * asway)
+			double ayaw = Math.Abs(YawVel);
+			double asway = Math.Abs(SwayAcc);
+			if (ayaw > 20 || asway > 1)
 				return Math.Abs(oldyaw) - asway;
-			oldyaw = yaw;
+			oldyaw = YawVel;
 			if (4 > asway)
 			{
-				LPfilter(ref LPyaw, 10, yaw);
-				LPfilter(ref LPsway, 10, sway);
+				LPfilter(ref LPyaw, 10, YawVel);
+				LPfilter(ref LPsway, 10, SwayAcc);
 				LPdiff = LPyaw - LPsway;
 				if (1 < LPdiff || -1 > LPdiff)
 				{
@@ -80,10 +78,10 @@ namespace blekenbleu.loaded
 			return dnew - dold;
 		}
 
-		double Slip(PluginManager pluginManager, char corner)
+		double Slip(char corner)
 		{
 			string raw = "DataCorePlugin.GameRawData.Physics.WheelSlip0" + corner;
-			var slip = pluginManager.GetPropertyValue(raw);
+			var slip = pm.GetPropertyValue(raw);
 			return (null == slip) ? 0 : Convert.ToDouble(slip);
 		}
 	}
