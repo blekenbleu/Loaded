@@ -6,10 +6,10 @@ namespace blekenbleu.loaded
 	{
 		string GameDBText, LoadStr, DeflStr, oops = "";
 		double LoadFL, LoadFR, LoadRL, LoadRR, DeflFL, DeflFR, DeflRL, DeflRR;
-		double LPdiff = 0, LPyaw = 0, LPsway = 0, YawVel = 0;
+		double LPdiff = 0, LPyaw = 0, LPsway = 0;
 		double ACprodFRslip = 0, SwayRate = 0;
-		double Loads, Heave, LSpeed, YawRate, Vsway, Steering;
-		double LSurge = 0, Roll = 0, DRoll = 0, Pitch = 0, DPitch = 0;
+		double Loads, Heave, YawRate, Steering, Vsway;
+		double SurgeAcc = 0, Roll = 0, DRoll = 0, Pitch = 0, DPitch = 0;
 
 		void Attach()
 		{
@@ -18,18 +18,17 @@ namespace blekenbleu.loaded
 			this.AttachDelegate("Gain",			() => Settings.Gain);
 			this.AttachDelegate("Game",			() => GameDBText);
 			this.AttachDelegate("Heave",		() => $"{Heave:0.000}");
-			this.AttachDelegate("Speed, Surge", () => $"{LSpeed:#0.0}, {LSurge:0.000}");
+			this.AttachDelegate("Speed, Surge", () => $"{SpeedKmh:#0.0}, {SurgeAcc:0.000}");
 			this.AttachDelegate("Thresh_sh",	() => 0.01 * View.Model.Thresh_sh);
 			this.AttachDelegate("Thresh_ss",	() => 0.01 * View.Model.Thresh_ss);
 			this.AttachDelegate("Thresh_sv",	() => View.Model.Thresh_sv);
 			this.AttachDelegate("DRoll",		() => DRoll);
 			this.AttachDelegate("DPitch",		() => DPitch);
 			this.AttachDelegate("LPdiff",		() => LPdiff);
-			this.AttachDelegate("SwayRate",		() => SwayRate);
-			this.AttachDelegate("YawVelocity",	() => oldyaw);
-			this.AttachDelegate("YawVsway",		() => DiffYawSway());
 			this.AttachDelegate("RangeRover",	() => RangeRover());
+			this.AttachDelegate("SlipAngle",	() => SlipAngle());
 			this.AttachDelegate("Steering",		() => Steering);
+			this.AttachDelegate("SwayRate",		() => SwayRate);
 			this.AttachDelegate("Vsway",		() => Vsway);
 			this.AttachDelegate("YawRate",		() => YawRate);	// Angular velocities in radians per second
 			this.AttachDelegate("oops",			() => oops);
