@@ -8,18 +8,18 @@ Wikipedia:&nbsp; ["Understeer Angle is the amount of additional steering (at roa
 [![](Properties/oversteer.jpg)](https://kogarahtyrepower.com.au/news/1944-tyrepower-kogarah-explains-oversteering-and-understeering)  
  &emsp; *by that definition, B and D  would represent understeer*  
 
-## [lateral acceleration = tangential speed × yaw velocity](https://boltflight.com/understanding-yaw-the-crucial-axis-of-rotational-motion-in-vehicles-and-aircraft/)
-- yaw velocity is already *vehicle attitude* angular velocity;  
-  lateral acceleration (sway acceleration) / vehicle speed becomes *vehicle trajectory* angular velocity  
-- difference between attitude and trajectory angular velocity represents (rear wheel) slip angle
-- difference between steering angle and net attitude and trajectory angle becomes front wheel slip angle
+## [lateral velocity = tangential speed × yaw velocity](https://boltflight.com/understanding-yaw-the-crucial-axis-of-rotational-motion-in-vehicles-and-aircraft/)
+- yaw velocity (SimHub `OrientationYawVelocity`) is already *vehicle attitude* angular velocity;  
+  lateral velocity (SimHub `AccelerationSway`) / vehicle speed becomes *vehicle trajectory* angular velocity  
+- attitude and trajectory angular velocities' difference represents (rear wheel) slip angle
+- steering angle with attitude minus trajectory angle becomes front wheel slip angle
 
-[**Front tire slip = steering angle - (yaw velocity + (lateral acceleration / tangential speed))**](https://vtechworks.lib.vt.edu/server/api/core/bitstreams/fe6d4ca1-514b-4e2b-b1ac-6561824a9de1/content)  
-**Rear Tire Slip  = yaw velocity - (lateral acceleration / tangential speed)**
+[**Front tire slip = (steering angle + yaw velocity) - (radial velocity / tangential speed))**](https://vtechworks.lib.vt.edu/server/api/core/bitstreams/fe6d4ca1-514b-4e2b-b1ac-6561824a9de1/content)  
+**Rear tire Slip  = yaw velocity - (radial velocity / tangential speed)**
 
 - alternative (1) for oversteer:&nbsp; more slip at rear tires than front  
 - alternative (2):&nbsp; vehicle yaw relative to vehicle direction (B, C, D, E)
-- alternative (3):&nbsp; vehicle *yaw rate* relative to lateral acceleration  
+- alternative (3):&nbsp; vehicle *yaw rate* relative to lateral velocity
 
 ## Assetto Corsa provides wheel slip telemetry for alternative (1):
 `DataCorePlugin.GameRawData.Physics.WheelSlip04 + DataCorePlugin.GameRawData.Physics.WheelSlip03 -
@@ -33,7 +33,8 @@ At least one issue:&nbsp; locked brakes in a straight line presents as massive o
 
 ## [@rangerover estimates Wikipedia's oversteer](https://www.youtube.com/watch?v=R90_3tEO5t4)
 - [Automobilista 2 - Rangey Under_Over Steer Front & Rear Slip with Brake surge 04-05-25](https://github.com/blekenbleu/SimHub-Profiles/blob/main/Automobilista%202%20-%20Rangey%20Under_Over%20Steer%20Front%20%26%20Rear%20Slip%20with%20Brake%20surge%2004-05-25.siprofile)
-- [IRacing - Rangey Over & Under Steer & Slip 12-08-24.](https://github.com/blekenbleu/SimHub-Profiles/blob/main/IRacing%20-%20Rangey%20Over%20%26%20Under%20Steer%20%26%20Slip%2012-08-24.siprofile)
+- [IRacing - Rangey Over & Under Steer & Slip 12-08-24.](https://github.com/blekenbleu/SimHub-Profiles/blob/main/IRacing%20-%20Rangey%20Over%20%26%20Under%20Steer%20%26%20Slip%2012-08-24.siprofile)  
+   RangeyRover's JavaScript:
 ```
 //Dont waste processing time if in pits or in pit lane or is less than 5kph$prop('SpeedKmh')
 //if ($prop('IsInPit')==1 || $prop('IsInPitLane')==1 || $prop('SpeedKmh')<=5){return 0;}
@@ -88,4 +89,15 @@ return Math.abs(over) * 10;
 return 0
 ```
 
+Plugin derivative of RangeRover slip angle calculator
+- ignores center of gravity
+- arctan only of 1000 * (game-independent) `AccelerationSway` divided by `SpeedKmh`
+	- steering and yaw are already angles
 
+## SimHub `AccelerationSway` is a *velocity*, not *acceleration*
+- does not change sign while steering stays one side of center
+- sway **acceleration** would zero when steering stops increasing
+- some games have local velocity X and local acceleration X properties...  
+	- but acceleration plot does not zero when velocity plot has zero slope:  
+    ![](Properties/sway.jpg)  
+	 &emsp; &emsp;  *local acceleration plots match `AccelerationSway`*
