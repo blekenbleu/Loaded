@@ -1,5 +1,4 @@
-﻿using GameReaderCommon;
-using SimHub.Plugins;
+﻿using SimHub.Plugins;
 using System;
 
 namespace blekenbleu.loaded
@@ -43,33 +42,42 @@ namespace blekenbleu.loaded
 			}
 		}
 
-		double oldyaw = 0, SwayAcc = 0, SpeedKmh = 0;
-		internal double DiffYawSway()
+		double SwayAcc = 0, SpeedKmh = 0, slipAngle = 0;
+		bool Paused = false;
+
+		// ignores steering; just vehicle orientation vs trajectory
+		internal double SlipAngle()
 		{
-			double ayaw = Math.Abs(YawVel);
-			double asway = Math.Abs(SwayAcc);
+			if (5 > SpeedKmh)
+                return 0;       // not only don't care, also blows up near 0
+
+			double swayrate, ayaw = Math.Abs(YawRate);
+			// sway rate converted to radians
+			double asway = Math.Abs(swayrate = Math.Atan(1000 * SwayAcc / SpeedKmh));
+
+			slipAngle = ayaw - View.Model.SlipGain * asway;
 			if (ayaw > 20 || asway > 1)
-				return Math.Abs(oldyaw) - asway;
-			oldyaw = YawVel;
-			if (4 > asway)
+				return slipAngle;
+
+			LPfilter(ref LPyaw, 10, YawRate);
+			LPfilter(ref LPsway, 10, swayrate);
+			LPdiff = LPyaw - View.Model.SlipGain * LPsway;
+			if (1 < LPdiff || -1 > LPdiff)
 			{
-				LPfilter(ref LPyaw, 10, YawVel);
-				LPfilter(ref LPsway, 10, SwayAcc);
-				LPdiff = LPyaw - LPsway;
-				if (1 < LPdiff || -1 > LPdiff)
+				double gain = LPyaw / LPsway;
+				if (1 < gain && 90 > gain)
 				{
-					double gain = View.Model.YawVelGain * LPsway / LPyaw;
-					if (1 < gain && 90 > gain)
-						View.Model.YawVelGain = (int)(0.5 * gain);
+					View.Model.SlipGain = (int)(0.5 * gain);
+					slipAngle = ayaw - View.Model.SlipGain * asway;
 				}
 			}
-			return ayaw - asway;
+			return slipAngle;
 		}
 
-		internal double LPfilter(ref double dold, double factor, double dnew)
+		internal void LPfilter(ref double dold, double factor, double dnew)
 		{
-			dold += (dnew - dold) / factor;
-			return dold;
+			if (!Paused)	// avoid contaminating filtered data during pauses
+				dold += (dnew - dold) / factor;
 		}
 
 		internal double HPfilter(ref double dold, double factor, double dnew)
