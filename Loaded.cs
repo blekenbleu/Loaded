@@ -38,6 +38,9 @@ namespace blekenbleu.loaded
 
 		double Prop(string parm)
 		{
+			if (0 == parm.Length)
+				return 0;
+
 			var value = pm.GetPropertyValue(parm);
 			if (null == value)
 			{
@@ -57,33 +60,39 @@ namespace blekenbleu.loaded
 		/// </summary>
 		/// <param name="pluginManager"></param>
 		/// <param name="data">Current game data, including current and previous data frame.</param>
+		TimeSpan PacketTime = new TimeSpan();
 		public void DataUpdate(PluginManager pluginManager, ref GameData data)
 		{
-			// Define the value of our property (declared in init)
-			if (!data.GameRunning || null == data.OldData || null == data.NewData)
+			// Update property values (declared in Init)
+			if (!data.GameRunning || null == data.OldData || null == data.NewData || null == data.NewData.CarId)
 				return;
-			try
+
+            try
 			{
 				pm = pluginManager;
+				int foo = (int)pm.GetPropertyValue("DataCorePlugin.GamePaused");
+                // skip LPfilter() if not updating
+                Paused = PacketTime == data.NewData.CurrentLapTime && (null != data.NewData.ReplayMode
+						|| 0 != foo);
+                PacketTime = data.NewData.CurrentLapTime;
 				Heave = data.NewData.AccelerationHeave ?? 0;
-				LSpeed = data.NewData.SpeedLocal;
-				LSurge = data.NewData.AccelerationSurge ?? 0;
-				var old = Pitch;
+				SurgeAcc = data.NewData.AccelerationSurge ?? 0;
+
+				var old = Pitch;								// potentially for load estimates
 				Pitch = data.NewData.OrientationPitch;
                 DPitch = Pitch - old;
 				old = Roll;
 				Roll = data.NewData.OrientationRoll;
 				DRoll = Roll - old;
+
+                // Local velocities and acceleration
                 SpeedKmh = data.NewData.SpeedKmh;
 				SwayAcc = data.NewData.AccelerationSway ?? 0;
-				SwayRate = (5 < SpeedKmh) ? SwayAcc / SpeedKmh : 0;
-				YawVel = View.Model.YawVelGain * 0.01 * data.NewData.OrientationYawVelocity;
+				YawRate = data.NewData.OrientationYawVelocity;	// radians per second?
 
 				// game-specific properties
 				Steering = Prop(Psteer);
-				// Local velocities in metres per second
 				Vsway = Prop(Psway);
-				YawRate = Prop(Pyaw);  // Angular velocities in radians per second
 				Load();
 				if (GameDBText == "AssettoCorsa")
 					ACprodFRslip = Slip('4') * Slip('3') - Slip('2') * Slip('1');
@@ -94,15 +103,16 @@ namespace blekenbleu.loaded
             }
         }
 
-		/// <summary>
-		/// Called at plugin manager stop, close/dispose anything needed here !
-		/// Plugins are rebuilt at game change
-		/// </summary>
-		/// <param name="pluginManager"></param>
-		public void End(PluginManager pluginManager)
+        /// <summary>
+        /// Called at plugin manager stop, close/dispose anything needed here !
+        /// Plugins are rebuilt at game change
+        /// </summary>
+        /// <param name="pluginManager"></param>
+        public void End(PluginManager pluginManager)
 		{
 			// Save settings
-			Settings.YawVelGain = View.Model.YawVelGain;
+			Settings.SlipGain = View.Model.SlipGain;
+			Settings.MatchGain = View.Model.MatchGain;
 			Settings.Thresh_sv = View.Model.Thresh_sv;
 			Settings.Thresh_sh = View.Model.Thresh_sh;
 			Settings.Thresh_ss = View.Model.Thresh_ss;
