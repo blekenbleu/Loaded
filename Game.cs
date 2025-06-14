@@ -4,9 +4,8 @@ namespace blekenbleu.loaded
 	{
 		string Psteer = "", Psway = "";
 
-		void Game (string name)
+		void Game (string name, string raw)
 		{
-			string raw = "DataCorePlugin.GameRawData.";
 			switch (name)
 			{
 				case "AssettoCorsa":

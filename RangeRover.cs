@@ -2,7 +2,7 @@
 
 namespace blekenbleu.loaded
 {
-	public partial class Loaded // : IPlugin, IDataPlugin, IWPFSettingsV2
+	public partial class Loaded
 	{
 		double MRyaw = 0, MRsway = 0;
 		double MatchRates()

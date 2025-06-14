@@ -13,7 +13,6 @@ namespace blekenbleu.loaded
 	public partial class Loaded : IPlugin, IDataPlugin, IWPFSettingsV2
 	{
 		Control View;
-		string[] corner, dorner;
 		public string PluginVersion = FileVersionInfo.GetVersionInfo(
 			Assembly.GetExecutingAssembly().Location).FileVersion.ToString(); 
 		public Settings Settings;
@@ -34,6 +33,80 @@ namespace blekenbleu.loaded
 		/// </summary>
 		public string LeftMenuTitle => "Loaded " + PluginVersion;
 
+        /// <summary>
+        /// Called at plugin manager stop, close/dispose anything needed here !
+        /// Plugins are rebuilt at game change
+        /// </summary>
+        /// <param name="pluginManager"></param>
+        public void End(PluginManager pluginManager)
+		{
+			// Save settings
+			Settings.Filter_L  = View.Model.Filter_L;
+			Settings.MatchGain = View.Model.MatchGain;
+			Settings.SlipGain  = View.Model.SlipGain;
+			Settings.Thresh_sv = View.Model.Thresh_sv;
+			Settings.Thresh_sh = View.Model.Thresh_sh;
+			Settings.Thresh_ss = View.Model.Thresh_ss;
+			this.SaveCommonSettings("GeneralSettings", Settings);
+		}
+
+		/// <summary>
+		/// Called once after plugins startup
+		/// Plugins are rebuilt at game change
+		/// </summary>
+		/// <param name="pluginManager"></param>
+		public void Init(PluginManager pluginManager)
+		{
+			SimHub.Logging.Current.Info("Starting " + LeftMenuTitle);
+			Game(GameDBText = pluginManager.GameName, "DataCorePlugin.GameRawData.");
+
+			// Load settings
+			Settings = this.ReadCommonSettings<Settings>("GeneralSettings", () => new Settings());
+			Attach();
+
+			// Declare an event
+			this.AddEvent("GainChange");
+
+			// Declare an action which can be called
+			this.AddAction("IncrementGain",(a, b) =>
+			{
+				int bump = Settings.Gain >> 3;
+
+				if (1 > bump)
+					bump = 1;
+                Settings.Gain += bump;
+				View.Dispatcher.Invoke((Action)(() =>
+					{ View.gl.Title = $"Load gain = {Settings.Gain:##0.00}"; }
+				));
+			});
+
+			// Declare an action which can be called
+			this.AddAction("DecrementGain", (a, b) =>
+			{
+				int bump = Settings.Gain >> 3;
+
+				if (1 > bump)
+					bump = 1;
+				Settings.Gain -= bump;
+				if (1 > Settings.Gain)
+					Settings.Gain = 1;
+				View.Dispatcher.Invoke((Action)(() =>
+					{ View.gl.Title = $"Load gain = {Settings.Gain:##0.00}"; }
+				));
+			});
+		}
+
+		/// <summary>
+		/// Returns the settings control, return null if no settings control is required
+		/// Must get called after Init(), since it initializes View.Model values to Settings
+		/// </summary>
+		/// <param name="pluginManager"></param>
+		/// <returns></returns>
+		public System.Windows.Controls.Control GetWPFSettingsControl(PluginManager pluginManager)
+		{
+			return View = new Control(this, PluginVersion);
+		}
+
 		PluginManager pm;
 
 		double Prop(string parm)
@@ -48,6 +121,13 @@ namespace blekenbleu.loaded
 				return 0;
 			}
 			return Convert.ToDouble(value);
+		}
+
+		double Slip(char wheel)
+		{
+			string raw = "DataCorePlugin.GameRawData.Physics.WheelSlip0" + wheel;
+			var slip = pm.GetPropertyValue(raw);
+			return (null == slip) ? 0 : Convert.ToDouble(slip);
 		}
 
 		/// <summary>
@@ -101,80 +181,6 @@ namespace blekenbleu.loaded
                 string oops = e?.ToString();
                 SimHub.Logging.Current.Info("DataUpdate() Failed: " + oops);
             }
-        }
-
-        /// <summary>
-        /// Called at plugin manager stop, close/dispose anything needed here !
-        /// Plugins are rebuilt at game change
-        /// </summary>
-        /// <param name="pluginManager"></param>
-        public void End(PluginManager pluginManager)
-		{
-			// Save settings
-			Settings.SlipGain = View.Model.SlipGain;
-			Settings.MatchGain = View.Model.MatchGain;
-			Settings.Thresh_sv = View.Model.Thresh_sv;
-			Settings.Thresh_sh = View.Model.Thresh_sh;
-			Settings.Thresh_ss = View.Model.Thresh_ss;
-			Settings.Filter_L = View.Model.Filter_L;
-			this.SaveCommonSettings("GeneralSettings", Settings);
-		}
-
-		/// <summary>
-		/// Returns the settings control, return null if no settings control is required
-		/// </summary>
-		/// <param name="pluginManager"></param>
-		/// <returns></returns>
-		public System.Windows.Controls.Control GetWPFSettingsControl(PluginManager pluginManager)
-		{
-			return View = new Control(this);
-		}
-
-		/// <summary>
-		/// Called once after plugins startup
-		/// Plugins are rebuilt at game change
-		/// </summary>
-		/// <param name="pluginManager"></param>
-		public void Init(PluginManager pluginManager)
-		{
-			SimHub.Logging.Current.Info("Starting " + LeftMenuTitle);
-			Game(GameDBText = pluginManager.GameName);
-
-			// Load settings
-			Settings = this.ReadCommonSettings<Settings>("GeneralSettings", () => new Settings());
-			Attach();
-
-			// Declare an event
-			this.AddEvent("GainChange");
-
-			// Declare an action which can be called
-			this.AddAction("IncrementGain",(a, b) =>
-			{
-				int bump = Settings.Gain >> 3;
-
-				if (1 > bump)
-					bump = 1;
-                Settings.Gain += bump;
-				SimHub.Logging.Current.Info(LeftMenuTitle + $"Gain {Settings.Gain}");
-				View.Dispatcher.Invoke((Action)(() =>
-					{ View.gl.Title = $"Load gain = {Settings.Gain:##0.00}"; }
-				));
-			});
-
-			// Declare an action which can be called
-			this.AddAction("DecrementGain", (a, b) =>
-			{
-				int bump = Settings.Gain >> 3;
-
-				if (1 > bump)
-					bump = 1;
-				Settings.Gain -= bump;
-				if (1 > Settings.Gain)
-					Settings.Gain = 1;
-				View.Dispatcher.Invoke((Action)(() =>
-					{ View.gl.Title = $"Load gain = {Settings.Gain:##0.00}"; }
-				));
-			});
-		}
+        }	// DataUpdate()
 	}
 }

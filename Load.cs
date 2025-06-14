@@ -1,10 +1,10 @@
-﻿using SimHub.Plugins;
-using System;
+﻿using System;
 
 namespace blekenbleu.loaded
 {
-	public partial class Loaded : IPlugin, IDataPlugin, IWPFSettingsV2
+	public partial class Loaded
 	{
+		string[] corner, dorner;
 		public void Load()
 		{
 			if (null != LoadStr)	// few games have load properties
@@ -84,13 +84,6 @@ namespace blekenbleu.loaded
 		{
 			dold += (dnew - dold) / factor;
 			return dnew - dold;
-		}
-
-		double Slip(char corner)
-		{
-			string raw = "DataCorePlugin.GameRawData.Physics.WheelSlip0" + corner;
-			var slip = pm.GetPropertyValue(raw);
-			return (null == slip) ? 0 : Convert.ToDouble(slip);
 		}
 	}
 }
