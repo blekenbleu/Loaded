@@ -39,11 +39,15 @@
 									 Value="{Binding Filter_L, Mode=TwoWay}"
 									 TickFrequency = "1" IsSnapToTickEnabled = "True"
 									 Maximum="50" Minimum="1" x:Name="fl"/>
-					<ui:TitledSlider Title="	 YawVelocity gain"
-									 Value="{Binding YawVelGain, Mode=TwoWay}"
+					<ui:TitledSlider Title="	 Slip gain"
+									 Value="{Binding SlipGain, Mode=TwoWay}"
 									 TickFrequency = "1" IsSnapToTickEnabled = "True"
 									 Maximum="90" Minimum="1" x:Name="yg"/>
-				</StackPanel>
+                <ui:TitledSlider Title="	 Match rate gain"
+									 Value="{Binding MatchGain, Mode=TwoWay}"
+									 TickFrequency = "1" IsSnapToTickEnabled = "True"
+									 Maximum="90" Minimum="1" x:Name="mg"/>
+            </StackPanel>
 			</styles:SHSection>
 		</Grid>
 </UserControl>

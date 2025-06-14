@@ -16,7 +16,8 @@ namespace blekenbleu.loaded
 		{
 			Plugin = plugin;
 			DataContext = Model = new Model();
-			Model.YawVelGain = plugin.Settings.YawVelGain;
+			Model.SlipGain = plugin.Settings.SlipGain;
+			Model.MatchGain = plugin.Settings.MatchGain;
 			Model.Thresh_sv = plugin.Settings.Thresh_sv;
 			Model.Thresh_sh = plugin.Settings.Thresh_sh;
 			Model.Thresh_ss = plugin.Settings.Thresh_ss;

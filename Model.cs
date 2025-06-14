@@ -63,11 +63,18 @@ namespace blekenbleu.loaded
 			set { SetField(ref filter_L, value, nameof(Filter_L)); }
 		}
 
-		private int yawVelGain = 20;
-		public int YawVelGain
+		private int matchGain = 20;
+		public int MatchGain
 		{
-			get => yawVelGain;
-			set { SetField(ref yawVelGain, value, nameof(YawVelGain)); }
+			get => matchGain;
+			set { SetField(ref matchGain, value, nameof(MatchGain)); }
+		}
+
+		private int slipGain = 20;
+		public int SlipGain
+		{
+			get => slipGain;
+			set { SetField(ref slipGain, value, nameof(SlipGain)); }
 		}
 	}
 }
