@@ -2,12 +2,11 @@ namespace blekenbleu.loaded
 {
 	public partial class Loaded
 	{
-		string Psteer = "", Pyaw, Psway = "", Psurge = "";
+		string Psteer = "", Psway = "";
 
 		void Game (string name)
 		{
 			string raw = "DataCorePlugin.GameRawData.";
-			Pyaw = "DataCorePlugin.GameData.OrientationYawVelocity";
 			switch (name)
 			{
 				case "AssettoCorsa":
@@ -15,15 +14,12 @@ namespace blekenbleu.loaded
 					DeflStr = raw+"Physics.SuspensionTravel0";
 					corner =  new string[] { "1", "2", "3", "4" };
 					Psteer = raw+"Physics.SteerAngle";
-					Psway = raw+"Physics.Velocity01";
-					Psurge = raw+"Physics.Velocity03";
 					break;
 				case "AssettoCorsaCompetizione":
 					DeflStr = raw+"Physics.SuspensionTravel0";
 					corner =  new string[] { "1", "2", "3", "4" };
 					Psteer = raw+"Physics.SteerAngle";
 					Psway = raw+"Physics.LocalVelocity01";
-					Psurge = raw+"Physics.LocalVelocity03";
 					break;
 				case "Automobilista":
 					LoadStr = raw+"Data.wheel";
@@ -32,42 +28,33 @@ namespace blekenbleu.loaded
 					dorner =  new string[] { "01.suspensionDeflection", "02.suspensionDeflection",
 											 "04.suspensionDeflection", "04.suspensionDeflection" };
 					Psteer = raw+"Data.unfilteredSteering";
-					Psway = raw+"Data.localVel.y";
-					Psurge = raw+"Data.localVel.x";
+					Psway = raw+"Data.localVel.x";
 					break;
 				case "Automobilista2":
 					DeflStr = raw+"mSuspensionTravel0";
 					corner =  new string[] { "1", "2", "3", "4" };
 					Psteer = raw+"mUnfilteredSteering";
 					Psway = raw+"mLocalVelocity01";
-					Psurge = raw+"mLocalVelocity03";
-					// Angular velocities in radians per second
-					Pyaw = raw+"mAngularVelocity02";
 					break;
 				case "BeamNgDrive":
 					DeflStr = raw+"suspension_position_";
 					corner =  new string[] { "fl", "fr", "rl", "rr" };
 					Psteer = raw+"input_steeringPercent";
-					Psway = raw+"velY";
-					Psurge = raw+"velX";
 					break;
 				case "CodemastersDirt4":
 					DeflStr = raw+"SuspensionPosition";
 					corner =  new string[] { "FrontLeft", "FrontRight", "RearLeft", "RearRight" };
 					Psteer = raw+"Steer";
-					// calculate from SpeedLocal, WorldSpeedX, WorldSpeedY
+					// calculate from Speed, WorldSpeedX, WorldSpeedY
 					break;
 				case "EAWRC23":
 					DeflStr = raw+"SessionUpdate.vehicle_hub_position_";
 					corner =  new string[] { "fl", "fr", "bl", "br" };
 					Psteer = raw+"SessionUpdate.vehicle_steering";
-					Psway = raw+"SessionUpdate.vehicle_velocity_y";
-					Psurge = raw+"SessionUpdate.vehicle_velocity_x";
+					Psway = raw+"SessionUpdateLocalVelocity.X";
 					break;
 				case "IRacing":
 					Psteer = raw+"Telemetry.SteeringWheelAngle";
-					Psway = raw+"Telemetry.VelocityY";
-					Psurge = raw+"Telemetry.VelocityX";
 					break;
 				case "FH5":
 					DeflStr = raw+"NormalizedSuspensionTravel";
@@ -78,14 +65,12 @@ namespace blekenbleu.loaded
 					corner =  new string[] { "1", "2", "3", "4" };
 					Psteer = raw+"mSteering";
 					Psway = raw+"mLocalVelocity01";
-					Psurge = raw+"mLocalVelocity03";
 					break;
 				case "RRRE":
 					DeflStr = raw+"Player.SuspensionDeflection.";
 					corner =  new string[] { "FrontLeft", "FrontRight", "RearLeft", "RearRight" };
 					Psteer = raw+"SteerInputRaw";
-					Psway = raw+"Player.LocalVelocity.Y";
-					Psurge = raw+"Player.LocalVelocity.X";
+					Psway = raw+"Player.LocalVelocity.X";
 					break;
 				case "RFactor2":
 					LoadStr = raw+"CurrentPlayerTelemetry.mWheels0";
@@ -94,8 +79,7 @@ namespace blekenbleu.loaded
 					dorner =  new string[] { "1.mVerticalTireDeflection", "2.mVerticalTireDeflection",
 											 "3.mVerticalTireDeflection", "4.mVerticalTireDeflection" };
 					Psteer = raw+"CurrentPlayerTelemetry.mFilteredSteering";
-					Psway = raw+"CurrentPlayerTelemetry.mLocalVel.y";
-					Psurge = raw+"CurrentPlayerTelemetry.mLocalVel.x";
+					Psway = raw+"CurrentPlayerTelemetry.mLocalVel.x";
 					break;
 				case "RBR":
 					LoadStr = raw+"NGPTelemetry.car.suspension";
@@ -105,10 +89,9 @@ namespace blekenbleu.loaded
 											 "LB.springDeflection", "RB.springDeflection" };
 					Psteer = raw+"Steering";
 					Psway = raw+"NGPTelemetry.car.velocities.sway";
-					Psurge = raw+"NGPTelemetry.car.velocities.surge";
 					break;
 				default:
-					Psteer = Psway = Psurge = "";
+					Psteer = Psway = "";
 					break;
 			}
 		}
