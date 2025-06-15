@@ -24,13 +24,13 @@ namespace blekenbleu.loaded
 			this.AttachDelegate("Thresh_sv",	() => View.Model.Thresh_sv);
 			this.AttachDelegate("DRoll",		() => DRoll);
 			this.AttachDelegate("DPitch",		() => DPitch);
-			this.AttachDelegate("LPdiff",		() => LPdiff);
-			this.AttachDelegate("RangeRover",	() => RangeRover());
-			this.AttachDelegate("SlipAngle",	() => SlipAngle());
-			this.AttachDelegate("Steering",		() => Steering);
-			this.AttachDelegate("SwayRate",		() => SwayRate);
-			this.AttachDelegate("Vsway",		() => Vsway);
-			this.AttachDelegate("YawRate",		() => YawRate);	// Angular velocities in radians per second
+			this.AttachDelegate("LPdiff",		() => LPdiff);		// SlipAngle() LPdiff = LPyaw - View.Model.SlipGain * LPsway
+			this.AttachDelegate("RangeRover",	() => RangeRover());// slip angle including steering
+			this.AttachDelegate("SlipAngle",	() => SlipAngle()); // ayaw - View.Model.SlipGain * asway
+			this.AttachDelegate("Steering",		() => Steering);	// game-dependent steering angle
+			this.AttachDelegate("SwayRate",		() => SwayRate);	// Math.Atan(1000 * SwayAcc / SpeedKmh)
+			this.AttachDelegate("Vsway",		() => Vsway);		// game dependent
+			this.AttachDelegate("YawRate",		() => YawRate);		// OrientationYawVelocity radians per second
 			this.AttachDelegate("oops",			() => oops);
 			if (GameDBText == "AssettoCorsa")
 				this.AttachDelegate("ACprodFRslip",	() => ACprodFRslip);

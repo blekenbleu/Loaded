@@ -101,3 +101,14 @@ Plugin derivative of RangeRover slip angle calculator
 	- but acceleration plot does not zero when velocity plot has zero slope:  
     ![](Properties/sway.jpg)  
 	 &emsp; &emsp;  *local acceleration plots match `AccelerationSway`*
+
+### slip angle properties - mostly from Load.cs SlipAngle()
+- YawRate:&nbsp; `OrientationYawVelocity` *radians per second*
+- LPdiff:&nbsp; `LPyaw - View.Model.SlipGain * LPsway`
+- RangeRover:&nbsp; *slip angle including steering*
+- SlipAngle:&nbsp; *slip angle without steering `ayaw - View.Model.SlipGain * asway`
+- SwayAcc:&nbsp; `AccelerationSway` *really, lateral velocity*
+- Steering:&nbsp; *game0dependent steering wheel telemetry converted to radians*
+- SwayRate:&nbsp; `Math.Atan(1000 * SwayAcc / SpeedKmh)`
+- Vsway:&nbsp; *game-dependent lateral velocity*
+- YawRate:&nbsp; `OrientationYawVelocity` *vehicle angle relative to trajectory*
