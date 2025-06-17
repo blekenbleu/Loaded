@@ -42,37 +42,32 @@ namespace blekenbleu.loaded
 			}
 		}
 
-		double SwayAcc = 0, SpeedKmh = 0, slipAngle = 0;
+		double SwayAcc = 0, SwayRate = 0, SpeedKmh = 0;
 		bool Paused = false;
 
 		// ignores steering; just vehicle orientation vs trajectory
-		internal double SlipAngle()
+		// not meaningful to consider angular rate conversions,
+		// since radians per second can be well outside meaningful static radian ranges,
+		// resulting in bizarra Atan() calculations.
+		internal double OverSteer()
 		{
 			if (5 > SpeedKmh)
-                return 0;       // not only don't care, also blows up near 0
+                return 0;       // not only don't care, SwayRate blows up near 0
 
-			double swayrate, ayaw = Math.Abs(YawRate);
-			// sway rate converted to radians
-			double asway = Math.Abs(swayrate = Math.Atan(1000 * SwayAcc / SpeedKmh));
-
-			slipAngle = ayaw - View.Model.SlipGain * asway;
-			if (ayaw > 20 || asway > 1)
-				return slipAngle;
-
-			LPfilter(ref LPyaw, 10, YawRate);
-			LPfilter(ref LPsway, 10, swayrate);
-			LPdiff = LPyaw - View.Model.SlipGain * LPsway;
-			if (1 < LPdiff || -1 > LPdiff)
-			{
-				double gain = LPyaw / LPsway;
-				if (1 < gain && 90 > gain)
+			if (YawRate < 3 && -3 < YawRate && SwayRate < 5 || -5 < SwayRate)
+			{	// relatively small YawRate, SwayRate in linear ranges
+            	LPfilter(ref LPyaw, 10, YawRate);
+				LPfilter(ref LPsway, 10, SwayRate);
+				LPdiff = LPyaw - View.Model.OverSteerGain * LPsway;
+				if (1 < LPdiff || -1 > LPdiff)		// recalculate OverSteerGain for larger differences
 				{
-					View.Model.SlipGain = (int)(0.5 * gain);
-					slipAngle = ayaw - View.Model.SlipGain * asway;
+					double gain = LPyaw / LPsway;
+					if (1 < gain && 90 > gain)
+						View.Model.OverSteerGain = (int)(0.5 * gain);
 				}
 			}
-			return slipAngle;
-		}
+			return Math.Abs(0.1 * View.Model.OverSteerGain * YawRate) - Math.Abs(SwayRate);
+        }
 
 		internal void LPfilter(ref double dold, double factor, double dnew)
 		{

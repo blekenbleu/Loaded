@@ -95,7 +95,7 @@ Plugin derivative of RangeRover slip angle calculator
 	- steering and yaw are already angles
 
 ## SimHub `AccelerationSway` is a *velocity*, not *acceleration*
-- does not change sign while steering stays one side of center
+- By observation, does not change sign while steering stays one side of center
 - sway **acceleration** would zero when steering stops increasing
 - some games have local velocity X and local acceleration X properties...  
 	- but acceleration plot does not zero when velocity plot has zero slope:  

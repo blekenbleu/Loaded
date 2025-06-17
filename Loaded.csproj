@@ -97,6 +97,7 @@
   <ItemGroup>
     <Compile Include="Attach.cs" />
     <Compile Include="Game.cs" />
+    <Compile Include="KalmanFilter.cs" />
     <Compile Include="Load.cs" />
     <Compile Include="Loaded.cs" />
     <Compile Include="Model.cs" />

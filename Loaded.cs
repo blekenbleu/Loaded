@@ -16,6 +16,8 @@ namespace blekenbleu.loaded
 		public string PluginVersion = FileVersionInfo.GetVersionInfo(
 			Assembly.GetExecutingAssembly().Location).FileVersion.ToString(); 
 		public Settings Settings;
+		KalmanFilter Kalman;
+		double[] Kyaw, Kswa, Kkmh;
 
 		/// <summary>
 		/// Instance of the current plugin manager
@@ -43,7 +45,7 @@ namespace blekenbleu.loaded
 			// Save settings
 			Settings.Filter_L  = View.Model.Filter_L;
 			Settings.MatchGain = View.Model.MatchGain;
-			Settings.SlipGain  = View.Model.SlipGain;
+			Settings.SlipGain  = View.Model.OverSteerGain;
 			Settings.Thresh_sv = View.Model.Thresh_sv;
 			Settings.Thresh_sh = View.Model.Thresh_sh;
 			Settings.Thresh_ss = View.Model.Thresh_ss;
@@ -94,6 +96,10 @@ namespace blekenbleu.loaded
 					{ View.gl.Title = $"Load gain = {Settings.Gain:##0.00}"; }
 				));
 			});
+			Kalman = new KalmanFilter();
+			Kyaw = Kalman.Init();
+			Kswa = Kalman.Init();
+			Kkmh = Kalman.Init();
 		}
 
 		/// <summary>
@@ -150,10 +156,9 @@ namespace blekenbleu.loaded
             try
 			{
 				pm = pluginManager;
-				int foo = (int)pm.GetPropertyValue("DataCorePlugin.GamePaused");
                 // skip LPfilter() if not updating
-                Paused = PacketTime == data.NewData.CurrentLapTime && (null != data.NewData.ReplayMode
-						|| 0 != foo);
+                Paused = PacketTime == data.NewData.CurrentLapTime; // && (null != data.NewData.ReplayMode
+//						|| 0 != (int)pm.GetPropertyValue("DataCorePlugin.GamePaused"));
                 PacketTime = data.NewData.CurrentLapTime;
 				Heave = data.NewData.AccelerationHeave ?? 0;
 				SurgeAcc = data.NewData.AccelerationSurge ?? 0;
@@ -166,9 +171,16 @@ namespace blekenbleu.loaded
 				DRoll = Roll - old;
 
                 // Local velocities and acceleration
-                SpeedKmh = data.NewData.SpeedKmh;
 				SwayAcc = data.NewData.AccelerationSway ?? 0;
 				YawRate = data.NewData.OrientationYawVelocity;	// radians per second?
+				if (!Paused)
+				{
+					KSwayAcc = Kalman.Filter(SwayAcc, ref Kswa);
+					KYawRate = Kalman.Filter(YawRate, ref Kyaw);
+                	SpeedKmh = Kalman.Filter(data.NewData.SpeedKmh, ref Kkmh);
+				} else KSwayAcc = KYawRate = SpeedKmh = 0;
+				if (5 < SpeedKmh)
+					SwayRate = 1000 * SwayAcc / SpeedKmh;
 
 				// game-specific properties
 				Steering = Prop(Psteer);

@@ -14,7 +14,7 @@ namespace blekenbleu.loaded
 		public Control(Loaded plugin, string version) : this()
 		{
 			DataContext = Model = new Model();
-			Model.SlipGain = plugin.Settings.SlipGain;
+			Model.OverSteerGain = plugin.Settings.SlipGain;
 			Model.MatchGain = plugin.Settings.MatchGain;
 			Model.Thresh_sv = plugin.Settings.Thresh_sv;
 			Model.Thresh_sh = plugin.Settings.Thresh_sh;

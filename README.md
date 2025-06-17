@@ -27,11 +27,15 @@ Front Right wheel load:   `loadFR = 25 + Loaded.Heave*Loaded.FRdefl/(Loaded.FRde
 	- heave minimum should be -25;&nbsp; maximum may be > 50
 	- load minimum should be 0...
 
+### Oversteer
+- one version based on [RangeyRover Automobilista 2 ShakeIt profile JavaScript](Properties/RearLeftFormula.md)
+- another considering only vehicle attitude vs trajectory
+
 ## Observations
-- Acceleratioin Sway and OrientationYawVelocity are comparable
+- Acceleration Sway and OrientationYawVelocity are comparable
 	- if scaled approx 1:2, [**differences estimate understeer and oversteer**](https://github.com/blekenbleu/Loaded/blob/main/Oversteer.md#oversteer)
-	- added YawVelocity Gain to adaptively match small Sway and Yaw amplitudes
-	- rescaled YawVelocity tries to ignore spikes in SimHub OrientationYawVelocity values
+	- added Gain adjustment to adaptively match small Sway and Yaw amplitudes
+	- try to ignore spikes observed in SimHub `OrientationYawVelocity` property plots
 	- save and restore all slider values
 - at least in AC and ACC, *positive* AccelerationSurge is *deceleration*...?
 

@@ -71,10 +71,10 @@ namespace blekenbleu.loaded
 		}
 
 		private int slipGain = 20;
-		public int SlipGain
+		public int OverSteerGain
 		{
 			get => slipGain;
-			set { SetField(ref slipGain, value, nameof(SlipGain)); }
+			set { SetField(ref slipGain, value, nameof(OverSteerGain)); }
 		}
 	}
 }
