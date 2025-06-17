@@ -157,8 +157,7 @@ namespace blekenbleu.loaded
 			{
 				pm = pluginManager;
                 // skip LPfilter() if not updating
-                Paused = PacketTime == data.NewData.CurrentLapTime; // && (null != data.NewData.ReplayMode
-//						|| 0 != (int)pm.GetPropertyValue("DataCorePlugin.GamePaused"));
+                Paused = 0 == data.NewData.SpeedKmh;
                 PacketTime = data.NewData.CurrentLapTime;
 				Heave = data.NewData.AccelerationHeave ?? 0;
 				SurgeAcc = data.NewData.AccelerationSurge ?? 0;
@@ -175,7 +174,7 @@ namespace blekenbleu.loaded
 				YawRate = data.NewData.OrientationYawVelocity;	// radians per second?
 				if (!Paused)
 				{
-					KSwayAcc = Kalman.Filter(SwayAcc, ref Kswa);
+					KSwayAcc = Kalman.Filter(SwayAcc, 0.8, ref Kswa);
 					KYawRate = Kalman.Filter(YawRate, ref Kyaw);
                 	SpeedKmh = Kalman.Filter(data.NewData.SpeedKmh, ref Kkmh);
 				} else KSwayAcc = KYawRate = SpeedKmh = 0;

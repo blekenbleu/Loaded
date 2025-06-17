@@ -25,19 +25,31 @@ namespace blekenbleu.loaded
 			this.AttachDelegate("DRoll",		() => DRoll);
 			this.AttachDelegate("DPitch",		() => DPitch);
 			this.AttachDelegate("LPdiff",		() => LPdiff);		// OverSteer() LPdiff = LPyaw - View.Model.OverSteerGain * LPsway
-			this.AttachDelegate("RangeRover",	() => RangeRover());// slip angle including steering
-			this.AttachDelegate("OverSteer",	() => OverSteer()); // ayaw - View.Model.OverSteerGain * asway
-			this.AttachDelegate("Steering",		() => Steering);	// game-dependent steering angle
+			this.AttachDelegate("OverSteer",	() => OverSteer()); // attitude - trajectory: ayaw - View.Model.OverSteerGain * asway
 			this.AttachDelegate("SpeedKmh",		() => SpeedKmh);	// Kalman-filtered SpeedKmh
 			this.AttachDelegate("KSwayAcc",		() => KSwayAcc);	// Kalman-filtered Sway Acceleration
 			this.AttachDelegate("SwayRate",		() => SwayRate);	// 1000 * SwayAcc / SpeedKmh
 			this.AttachDelegate("Vsway",		() => Vsway);		// game dependent
 			this.AttachDelegate("YawRate",		() => YawRate);		// OrientationYawVelocity radians per second
 			this.AttachDelegate("KYawRate",		() => KYawRate);	// Kalman-filtered OrientationYawVelocity radians per second
+
+			/// RangeyRover properties
+			this.AttachDelegate("RangeyRover",	() => RangeyRover());// rear - front slip angle including steering
+			this.AttachDelegate("Steering",		() => Steering);	// game-dependent steering angle
+			this.AttachDelegate("RRyaw_rate",	() => yaw_rate);	// usually OrientationYawVelocity
+			this.AttachDelegate("RRVlateral",	() => Vlateral);	// usually AccelerationSway
+			this.AttachDelegate("RRVlong",		() => Vlong);		// usually SpeedKmh
+			this.AttachDelegate("RRSwayRadians",() => SwayRadians);
+			this.AttachDelegate("RRSwayRatio",  () => SwayRatio);
+			this.AttachDelegate("RRSwayScaled", () => SwayScaled);
+			this.AttachDelegate("RRrear_slip",  () => rear_slip_angle);
+			this.AttachDelegate("RRfront_slip", () => front_slip_angle);
+			this.AttachDelegate("RRYawRadians",() => YawRadians);
 			
 			this.AttachDelegate("oops",			() => oops);
 			if (GameDBText == "AssettoCorsa")
 				this.AttachDelegate("ACprodFRslip",	() => ACprodFRslip);
+
 			if (null != DeflStr)
 			{
 				this.AttachDelegate("FLdefl",	() => DeflFL);

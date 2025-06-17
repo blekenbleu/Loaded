@@ -17,10 +17,15 @@ public class KalmanFilter
 
 	public double Filter(double input, ref double [] k)
 	{
+		return Filter(input, Q, ref k);
+	}
+
+	public double Filter(double input, double noise, ref double [] k)
+	{
 		double filtered = k[0], uncertainty = k[1];
 
-		uncertainty += Q;			// update prediction uncertainty
-		// uncertainty monotonically decreases to limit determined by Q
+		uncertainty += noise;			// update prediction uncertainty
+		// uncertainty monotonically decreases to limit determined by noise
 		uncertainty /= (uncertainty + 1);
 		k[1] = uncertainty;
 
