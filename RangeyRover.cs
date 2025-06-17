@@ -15,9 +15,9 @@ namespace blekenbleu.loaded
  ;		Establish a gain that minimizes yaw and sway rate differences for low cornering loads.
  */
 		double MatchRates() // multiplied by SwayRadians
-        {
+		{
 			RRgain = 50 * View.Model.MatchGain;
-            if (Paused || 1 < SwayAcc || -1 > SwayAcc || 1 < KSwayAcc || -1 > KSwayAcc
+			if (Paused || 1 < SwayAcc || -1 > SwayAcc || 1 < KSwayAcc || -1 > KSwayAcc
 			 || 20000 < gainCt || 0 == SwayRadians || 0 > YawRadians / SwayRadians)
 				return RRgain;
 
@@ -45,8 +45,8 @@ namespace blekenbleu.loaded
 			Vlong = (GameDBText != "Automobilista2") ? SpeedKmh / 3:
 									- Prop("DataCorePlugin.GameRawData.mLocalVelocity03");
 
-            if (2 > Vlong)
-				return 0;       // not only don't care, calculations blow up near 0
+			if (2 > Vlong)
+				return 0;	   // not only don't care, calculations blow up near 0
 
 			if (GameDBText == "Automobilista2")
 			{
@@ -57,12 +57,12 @@ namespace blekenbleu.loaded
 			{
 				yaw_rate = - YawRate / 57;
 				Vlateral = 0.364 * SwayAcc;
-            }
+			}
 			YawRadians = yaw_rate / Vlong;
 
-            SwayRadians = Math.Atan(SwayRatio = Vlateral / Vlong);
-            // match SwayRadians and YawRadians for low slips
-            SwayScaled = SwayRadians * MatchRates();
+			SwayRadians = Math.Atan(SwayRatio = Vlateral / Vlong);
+			// match SwayRadians and YawRadians for low slips
+			SwayScaled = SwayRadians * MatchRates();
 
 			rear_slip_angle = Rd * (YawRadians - SwayScaled);	// orientation - trajectory
 			// Normalized input:   [ -1.0f <= Steering <= 1.0f ]
