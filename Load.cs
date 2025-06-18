@@ -42,31 +42,48 @@ namespace blekenbleu.loaded
 			}
 		}
 
-		double SwayAcc = 0, SwayRate = 0, SpeedKmh = 0;
+		double SwayAcc = 0, SwayRate = 0, SpeedKmh = 0, Gtot = 0;
 		bool Paused = false;
+		uint Gct = 0;
 
-		// ignores steering; just vehicle orientation vs trajectory
-		// not meaningful to consider angular rate conversions,
-		// since radians per second can be well outside meaningful static radian ranges,
-		// resulting in bizarra Atan() calculations.
+		// `OverSteer()` ignores steering; just sorts vehicle orientation vs trajectory
+		// Since radians per second can be well outside meaningful static radian ranges,
+		// Atan() calculations would be bizarre.
+
+		// Practically, if YawRate is sampled often enough
+		// that angular changes between samples are < 12 degrees or 0.2 radians,
+		// and since tan(0.2) is nearly 0.2, then dividing radians per second by tangential speed
+		// is practically equivalent to lateral displacement increments divided by tangential distance increments.
+
+		// Also practically, SwayRate (`1000 * AccelerationSway / SpeedKmh`) by observation
+		// correlates directly to `OrientationYawVelocity` *without dividing* `OrientationYawVelocity` by `SpeedKmh`.
+		double OldOS = 0;
 		internal double OverSteer()
 		{
-			if (5 > SpeedKmh)
-                return 0;       // not only don't care, SwayRate blows up near 0
+			if (Paused)
+                return OldOS;
 
-			if (YawRate < 3 && -3 < YawRate && SwayRate < 5 || -5 < SwayRate)
-			{	// relatively small YawRate, SwayRate in linear ranges
+            // division blows up near 0 YawRate;  avoid Yaw and Sway of different signs
+            if (5000 > Gct && 9 > YawRate * YawRate && 25 > SwayRate * SwayRate && 1 > SwayAcc * SwayAcc
+				&& 1 > KSwayAcc * KSwayAcc && 0 != YawRate && 0 < SwayRate * YawRate)
+			{	// relatively small YawRate / SwayRate are nearly linear
             	LPfilter(ref LPyaw, 10, YawRate);
 				LPfilter(ref LPsway, 10, SwayRate);
-				LPdiff = LPyaw - View.Model.OverSteerGain * LPsway;
-				if (1 < LPdiff || -1 > LPdiff)		// recalculate OverSteerGain for larger differences
+				double scale = 10 * LPsway / LPyaw;		// sometimes still negative!!
+				if (1 < scale && 90 > scale)
 				{
-					double gain = LPyaw / LPsway;
-					if (1 < gain && 90 > gain)
-						View.Model.OverSteerGain = (int)(0.5 * gain);
+					Gct++;								// average estimated scale factor
+					Gtot += scale;
+//					int iscale = (int)(0.5 + Gtot / Gct);
+//					if (iscale != View.Model.OverScale)
+//					{
+//						oops = $"OverSteer() Gct {Gct}";
+						View.Model.OverScale = (int)(0.5 + Gtot / Gct);
+//					}
 				}
+//				else oops = $"OverSteer() scale {scale}";
 			}
-			return Math.Abs(0.1 * View.Model.OverSteerGain * YawRate) - Math.Abs(SwayRate);
+			return OldOS = Math.Abs(0.1 * View.Model.OverScale * YawRate) - Math.Abs(SwayRate);
         }
 
 		internal void LPfilter(ref double dold, double factor, double dnew)

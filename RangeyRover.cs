@@ -16,7 +16,7 @@ namespace blekenbleu.loaded
  */
 		double MatchRates() // multiplied by SwayRadians
 		{
-			RRgain = 50 * View.Model.MatchGain;
+			RRgain = 50 * View.Model.RRfactor;
 			if (Paused || 1 < SwayAcc || -1 > SwayAcc || 1 < KSwayAcc || -1 > KSwayAcc
 			 || 20000 < gainCt || 0 == SwayRadians || 0 > YawRadians / SwayRadians)
 				return RRgain;
@@ -31,8 +31,8 @@ namespace blekenbleu.loaded
 			RRgain = 50 * MRyaw / MRsway;
 			gainCt++;
 			gainTot += (10 > RRgain) ? 10 : 90 < RRgain ? 90 : RRgain;
-			View.Model.MatchGain = (int)(0.5 + gainTot / gainCt);
-			return 50 * View.Model.MatchGain;
+			View.Model.RRfactor = (int)(0.5 + gainTot / gainCt);
+			return 50 * View.Model.RRfactor;
 		}
 
 		// AttachDelegate() calls this

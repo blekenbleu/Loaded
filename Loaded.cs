@@ -44,8 +44,8 @@ namespace blekenbleu.loaded
 		{
 			// Save settings
 			Settings.Filter_L  = View.Model.Filter_L;
-			Settings.MatchGain = View.Model.MatchGain;
-			Settings.SlipGain  = View.Model.OverSteerGain;
+			Settings.MatchGain = View.Model.RRfactor;
+			Settings.SlipGain  = View.Model.OverScale;
 			Settings.Thresh_sv = View.Model.Thresh_sv;
 			Settings.Thresh_sh = View.Model.Thresh_sh;
 			Settings.Thresh_ss = View.Model.Thresh_ss;

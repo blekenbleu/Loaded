@@ -24,8 +24,8 @@ namespace blekenbleu.loaded
 			this.AttachDelegate("Thresh_sv",	() => View.Model.Thresh_sv);
 			this.AttachDelegate("DRoll",		() => DRoll);
 			this.AttachDelegate("DPitch",		() => DPitch);
-			this.AttachDelegate("LPdiff",		() => LPdiff);		// OverSteer() LPdiff = LPyaw - View.Model.OverSteerGain * LPsway
-			this.AttachDelegate("OverSteer",	() => OverSteer()); // attitude - trajectory: ayaw - View.Model.OverSteerGain * asway
+			this.AttachDelegate("LPdiff",		() => LPdiff);		// OverSteer() LPdiff = LPyaw - View.Model.OverScale * LPsway
+			this.AttachDelegate("OverSteer",	() => OverSteer()); // attitude - trajectory: ayaw - View.Model.OverScale * asway
 			this.AttachDelegate("SpeedKmh",		() => SpeedKmh);	// Kalman-filtered SpeedKmh
 			this.AttachDelegate("KSwayAcc",		() => KSwayAcc);	// Kalman-filtered Sway Acceleration
 			this.AttachDelegate("SwayRate",		() => SwayRate);	// 1000 * SwayAcc / SpeedKmh

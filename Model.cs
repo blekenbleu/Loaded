@@ -64,17 +64,17 @@ namespace blekenbleu.loaded
 		}
 
 		private int matchGain = 20;
-		public int MatchGain
+		public int RRfactor
 		{
 			get => matchGain;
-			set { SetField(ref matchGain, value, nameof(MatchGain)); }
+			set { SetField(ref matchGain, value, nameof(RRfactor)); }
 		}
 
 		private int slipGain = 20;
-		public int OverSteerGain
+		public int OverScale
 		{
 			get => slipGain;
-			set { SetField(ref slipGain, value, nameof(OverSteerGain)); }
+			set { SetField(ref slipGain, value, nameof(OverScale)); }
 		}
 	}
 }

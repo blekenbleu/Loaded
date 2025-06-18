@@ -39,12 +39,12 @@
 									 Value="{Binding Filter_L, Mode=TwoWay}"
 									 TickFrequency = "1" IsSnapToTickEnabled = "True"
 									 Maximum="50" Minimum="1" x:Name="fl"/>
-					<ui:TitledSlider Title="	 Slip gain"
-									 Value="{Binding SlipGain, Mode=TwoWay}"
+					<ui:TitledSlider Title="	 Oversteer scale"
+									 Value="{Binding OverScale, Mode=TwoWay}"
 									 TickFrequency = "1" IsSnapToTickEnabled = "True"
 									 Maximum="90" Minimum="1" x:Name="yg"/>
-                <ui:TitledSlider Title="	 Match rate gain"
-									 Value="{Binding MatchGain, Mode=TwoWay}"
+                <ui:TitledSlider Title="	 RangeyRover factor"
+									 Value="{Binding RRfactor, Mode=TwoWay}"
 									 TickFrequency = "1" IsSnapToTickEnabled = "True"
 									 Maximum="90" Minimum="1" x:Name="mg"/>
             </StackPanel>
