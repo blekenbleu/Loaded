@@ -18,11 +18,15 @@ namespace blekenbleu.loaded
 		public Settings Settings;
 		KalmanFilter Kalman;
 		double[] Kyaw, Kswa, Kkmh;
+        // Typical steering angle 24 degrees; set to game's car value
+        readonly float stang = -24;			// change sign to match OrientationYawVelocity, AccelerationSway 
+        readonly double Rd = 180 / Math.PI;
 
-		/// <summary>
-		/// Instance of the current plugin manager
-		/// </summary>
-		public PluginManager PluginManager { get; set; }
+
+        /// <summary>
+        /// Instance of the current plugin manager
+        /// </summary>
+        public PluginManager PluginManager { get; set; }
 
 		/// <summary>
 		/// Gets the left menu icon. Icon must be 24x24 and compatible with black and white display.
@@ -45,7 +49,8 @@ namespace blekenbleu.loaded
 			// Save settings
 			Settings.Filter_L  = View.Model.Filter_L;
 			Settings.MatchGain = View.Model.RRfactor;
-			Settings.SlipGain  = View.Model.OverScale;
+			Settings.SlipGain  = View.Model.YawScale;
+			Settings.SwayGain  = View.Model.SwayScale;
 			Settings.Thresh_sv = View.Model.Thresh_sv;
 			Settings.Thresh_sh = View.Model.Thresh_sh;
 			Settings.Thresh_ss = View.Model.Thresh_ss;
@@ -171,18 +176,20 @@ namespace blekenbleu.loaded
 
                 // Local velocities and acceleration
 				SwayAcc = data.NewData.AccelerationSway ?? 0;
-				YawRate = data.NewData.OrientationYawVelocity;	// radians per second?
+				YawRate = 50 < data.NewData.OrientationYawVelocity ? 50 : data.NewData.OrientationYawVelocity;	// radians per second?
+
 				if (!Paused)
 				{
 					KSwayAcc = Kalman.Filter(SwayAcc, 0.8, ref Kswa);
 					KYawRate = Kalman.Filter(YawRate, ref Kyaw);
                 	SpeedKmh = Kalman.Filter(data.NewData.SpeedKmh, ref Kkmh);
 				} else KSwayAcc = KYawRate = SpeedKmh = 0;
-				if (5 < SpeedKmh)
-					SwayRate = 1000 * SwayAcc / SpeedKmh;
 
-				// game-specific properties
-				Steering = Prop(Psteer);
+				SwayRate = (5 < SpeedKmh) ? 1000 * SwayAcc / SpeedKmh : 0;
+
+				// game specific properties
+				// Normalized steering input:   [ -1.0f <= Prop(Psteer) <= 1.0f ]
+				Steering = stang * Prop(Psteer);	// +/- 1 to -/+ degrees
 				Vsway = Prop(Psway);
 				Load();
 				if (GameDBText == "AssettoCorsa")

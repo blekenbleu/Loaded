@@ -5,8 +5,8 @@ namespace blekenbleu.loaded
 	public partial class Loaded
 	{
 		double MRyaw = 0, MRsway = 0, SwayRadians, YawRadians;
-		double yaw_rate, Vlateral, Vlong, SwayScaled, RRgain;
-		double rear_slip_angle, front_slip_angle, SwayRatio;
+		double yaw_rate, Vlateral, Vlong, RRSwayScale, RRgain;
+		double RRyawSway, front_slip_angle, SwayRatio;
 		double gainTot = 0;
 		ushort gainCt = 0;
 /*
@@ -16,8 +16,8 @@ namespace blekenbleu.loaded
  */
 		double MatchRates() // multiplied by SwayRadians
 		{
-			RRgain = 50 * View.Model.RRfactor;
-			if (Paused || 1 < SwayAcc || -1 > SwayAcc || 1 < KSwayAcc || -1 > KSwayAcc
+			RRgain = 0.01 * View.Model.RRfactor;
+			if (Paused || 1 < SwayAcc * SwayAcc || 1 < KSwayAcc * KSwayAcc
 			 || 20000 < gainCt || 0 == SwayRadians || 0 > YawRadians / SwayRadians)
 				return RRgain;
 
@@ -27,21 +27,18 @@ namespace blekenbleu.loaded
 				return RRgain;
 
 			LPfilter(ref MRyaw, 10, 40000 * ayaw);
-			LPfilter(ref MRsway, 10, 10 * RRgain * asway);
-			RRgain = 50 * MRyaw / MRsway;
+			LPfilter(ref MRsway, 10, 40000 * asway);
+			RRgain = 100 * MRyaw / MRsway;	// unity gain is 100 on slider
 			gainCt++;
-			gainTot += (10 > RRgain) ? 10 : 90 < RRgain ? 90 : RRgain;
+			gainTot += (1 > RRgain) ? 1 : 190 < RRgain ? 190 : RRgain;
 			View.Model.RRfactor = (int)(0.5 + gainTot / gainCt);
-			return 50 * View.Model.RRfactor;
+			return 0.01 * View.Model.RRfactor;
 		}
 
 		// AttachDelegate() calls this
 		// property names set in Game(); values in DataUpdate()
 		double RangeyRover()
 		{   // slip angles by simplified equation,  ignoring CoG
-			// Typical steering angle 24 degrees; set to game's car value
-			double stang = 24, Rd = 180/Math.PI;
-
 			Vlong = (GameDBText != "Automobilista2") ? SpeedKmh / 3:
 									- Prop("DataCorePlugin.GameRawData.mLocalVelocity03");
 
@@ -50,28 +47,27 @@ namespace blekenbleu.loaded
 
 			if (GameDBText == "Automobilista2")
 			{
-				yaw_rate = - Prop("GameRawData.mAngularVelocity02");
-				Vlateral = Prop("DataCorePlugin.GameRawData.mLocalVelocity01");
+				yaw_rate = Prop("GameRawData.mAngularVelocity02");
+				Vlateral = - Prop("DataCorePlugin.GameRawData.mLocalVelocity01");
 			}
 			else
 			{
-				yaw_rate = - YawRate / 57;
+				yaw_rate = YawRate / 57;
 				Vlateral = 0.364 * SwayAcc;
 			}
 			YawRadians = yaw_rate / Vlong;
 
 			SwayRadians = Math.Atan(SwayRatio = Vlateral / Vlong);
 			// match SwayRadians and YawRadians for low slips
-			SwayScaled = SwayRadians * MatchRates();
+			RRSwayScale = SwayRadians * MatchRates();
 
-			rear_slip_angle = Rd * (YawRadians - SwayScaled);	// orientation - trajectory
-			// Normalized input:   [ -1.0f <= Steering <= 1.0f ]
+			RRyawSway = Rd * (YawRadians - RRSwayScale);	// orientation - trajectory
 			// front_slip_angle is difference between direction wheels point and trajectory
 			// vehicle yaw adds to wheel direction
-			front_slip_angle = stang * Steering + rear_slip_angle;
+			front_slip_angle = Steering + RRyawSway;
 
 			// Oversteer in degrees
-			return Math.Abs(rear_slip_angle) - Math.Abs(front_slip_angle);	// positive = Oversteer
+			return Math.Abs(RRyawSway) - Math.Abs(front_slip_angle);	// positive = Oversteer
 		}
 	}
 }

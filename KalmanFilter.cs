@@ -1,6 +1,3 @@
-using SimHub.Plugins.OutputPlugins.Dash.GLCDTemplating;
-using System;
-
 public class KalmanFilter
 {
     private readonly double Q = 0.125;

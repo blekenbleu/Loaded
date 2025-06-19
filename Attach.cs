@@ -6,7 +6,7 @@ namespace blekenbleu.loaded
 	{
 		string GameDBText, LoadStr, DeflStr, oops = "";
 		double LoadFL, LoadFR, LoadRL, LoadRR, DeflFL, DeflFR, DeflRL, DeflRR;
-		double LPdiff = 0, LPyaw = 0, LPsway = 0;
+		double LPyaw = 0, LPsway = 0;
 		double ACprodFRslip = 0;
 		double Loads, Heave, YawRate, Steering, Vsway, KSwayAcc, KYawRate;
 		double SurgeAcc = 0, Roll = 0, DRoll = 0, Pitch = 0, DPitch = 0;
@@ -24,14 +24,14 @@ namespace blekenbleu.loaded
 			this.AttachDelegate("Thresh_sv",	() => View.Model.Thresh_sv);
 			this.AttachDelegate("DRoll",		() => DRoll);
 			this.AttachDelegate("DPitch",		() => DPitch);
-			this.AttachDelegate("LPdiff",		() => LPdiff);		// OverSteer() LPdiff = LPyaw - View.Model.OverScale * LPsway
-			this.AttachDelegate("OverSteer",	() => OverSteer()); // attitude - trajectory: ayaw - View.Model.OverScale * asway
+			this.AttachDelegate("OverSteer",	() => OverSteer()); // attitude - trajectory: ayaw - View.Model.YawScale * asway
 			this.AttachDelegate("SpeedKmh",		() => SpeedKmh);	// Kalman-filtered SpeedKmh
 			this.AttachDelegate("KSwayAcc",		() => KSwayAcc);	// Kalman-filtered Sway Acceleration
 			this.AttachDelegate("SwayRate",		() => SwayRate);	// 1000 * SwayAcc / SpeedKmh
 			this.AttachDelegate("Vsway",		() => Vsway);		// game dependent
 			this.AttachDelegate("YawRate",		() => YawRate);		// OrientationYawVelocity radians per second
 			this.AttachDelegate("KYawRate",		() => KYawRate);	// Kalman-filtered OrientationYawVelocity radians per second
+			this.AttachDelegate("YawSway",		() => YawSway);
 
 			/// RangeyRover properties
 			this.AttachDelegate("RangeyRover",	() => RangeyRover());// rear - front slip angle including steering
@@ -41,10 +41,10 @@ namespace blekenbleu.loaded
 			this.AttachDelegate("RRVlong",		() => Vlong);		// usually SpeedKmh
 			this.AttachDelegate("RRSwayRadians",() => SwayRadians);
 			this.AttachDelegate("RRSwayRatio",  () => SwayRatio);
-			this.AttachDelegate("RRSwayScaled", () => SwayScaled);
-			this.AttachDelegate("RRrear_slip",  () => rear_slip_angle);
+			this.AttachDelegate("RRSwayScale", () => RRSwayScale);
 			this.AttachDelegate("RRfront_slip", () => front_slip_angle);
 			this.AttachDelegate("RRYawRadians",() => YawRadians);
+			this.AttachDelegate("RRyawSway",() => RRyawSway);
 			
 			this.AttachDelegate("oops",			() => oops);
 			if (GameDBText == "AssettoCorsa")

@@ -16,7 +16,7 @@
 				<ColumnDefinition Width="0*" />
 			</Grid.ColumnDefinitions>
 
-			<styles:SHSection Title="OPTIONS" Grid.ColumnSpan="2" ShowSeparator="True" x:Name="tt">
+			<styles:SHSection Title="Controls" Grid.ColumnSpan="2" ShowSeparator="True" x:Name="tt">
 				<StackPanel>
 					<styles:SHSubSection Title="Load gain" x:Name="gl"/>
 					<ui:ControlsEditor FriendlyName="	Decrement Gain" ActionName="Loaded.DecrementGain"/>
@@ -39,14 +39,18 @@
 									 Value="{Binding Filter_L, Mode=TwoWay}"
 									 TickFrequency = "1" IsSnapToTickEnabled = "True"
 									 Maximum="50" Minimum="1" x:Name="fl"/>
-					<ui:TitledSlider Title="	 Oversteer scale"
-									 Value="{Binding OverScale, Mode=TwoWay}"
+					<ui:TitledSlider Title="	 Oversteer sway scale %"
+									 Value="{Binding SwayScale, Mode=TwoWay}"
 									 TickFrequency = "1" IsSnapToTickEnabled = "True"
-									 Maximum="90" Minimum="1" x:Name="yg"/>
-                <ui:TitledSlider Title="	 RangeyRover factor"
+									 Maximum="190" Minimum="1" x:Name="sg"/>
+					<ui:TitledSlider Title="	 Oversteer yaw scale %"
+									 Value="{Binding YawScale, Mode=TwoWay}"
+									 TickFrequency = "1" IsSnapToTickEnabled = "True"
+									 Maximum="190" Minimum="1" x:Name="yg"/>
+                <ui:TitledSlider Title="	 RangeyRover Sway factor %"
 									 Value="{Binding RRfactor, Mode=TwoWay}"
 									 TickFrequency = "1" IsSnapToTickEnabled = "True"
-									 Maximum="90" Minimum="1" x:Name="mg"/>
+									 Maximum="190" Minimum="1" x:Name="mg"/>
             </StackPanel>
 			</styles:SHSection>
 		</Grid>

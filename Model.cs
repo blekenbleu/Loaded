@@ -71,10 +71,17 @@ namespace blekenbleu.loaded
 		}
 
 		private int slipGain = 20;
-		public int OverScale
+		public int YawScale
 		{
 			get => slipGain;
-			set { SetField(ref slipGain, value, nameof(OverScale)); }
+			set { SetField(ref slipGain, value, nameof(YawScale)); }
+		}
+
+		private int swayGain = 20;
+		public int SwayScale
+		{
+			get => swayGain;
+			set { SetField(ref swayGain, value, nameof(SwayScale)); }
 		}
 	}
 }

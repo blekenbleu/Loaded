@@ -14,13 +14,13 @@ namespace blekenbleu.loaded
 		public Control(Loaded plugin, string version) : this()
 		{
 			DataContext = Model = new Model();
-			Model.OverScale = plugin.Settings.SlipGain;
+			Model.YawScale = plugin.Settings.SlipGain;
+			Model.SwayScale = plugin.Settings.SwayGain;
 			Model.RRfactor = plugin.Settings.MatchGain;
 			Model.Thresh_sv = plugin.Settings.Thresh_sv;
 			Model.Thresh_sh = plugin.Settings.Thresh_sh;
 			Model.Thresh_ss = plugin.Settings.Thresh_ss;
 			Model.Filter_L = plugin.Settings.Filter_L;
-			tt.Title = "Version " + version + " Options";
 			gl.Title = $"Load gain = {plugin.Settings.Gain:##0.00}";
 		}
 	}
