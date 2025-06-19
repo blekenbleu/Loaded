@@ -4,19 +4,11 @@
 			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 			 mc:Ignorable="d"
-			 xmlns:local="clr-namespace:blekenbleu.loaded"
 			 xmlns:styles="clr-namespace:SimHub.Plugins.Styles;assembly=SimHub.Plugins"
 			 xmlns:ui="clr-namespace:SimHub.Plugins.UI;assembly=SimHub.Plugins"
-			 d:DataContext="{d:DesignInstance Type=local:Model}"
-			 d:DesignHeight="500" d:DesignWidth="600">
+			>
 	
 	<Grid Width="600" VerticalAlignment="Top">
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition />
-				<ColumnDefinition Width="0*" />
-			</Grid.ColumnDefinitions>
-
-			<styles:SHSection Title="Controls" Grid.ColumnSpan="2" ShowSeparator="True" x:Name="tt">
 				<StackPanel>
 					<styles:SHSubSection Title="Load gain" x:Name="gl"/>
 					<ui:ControlsEditor FriendlyName="	Decrement Gain" ActionName="Loaded.DecrementGain"/>
@@ -26,32 +18,31 @@
 					<ui:TitledSlider Title="	 speed threshold"
 									 Value="{Binding Thresh_sv, Mode=TwoWay}"
 									 TickFrequency = "1" IsSnapToTickEnabled = "True"
-									 Maximum="50" Minimum="0" x:Name="sv"/>
+									 Maximum="50" Minimum="0"/>
 					<ui:TitledSlider Title="	 surge threshold - will be multiplied by 0.01"
 									 Value="{Binding Thresh_ss, Mode=TwoWay}"
 									 TickFrequency = "1" IsSnapToTickEnabled = "True"
-									 Maximum="50" Minimum="0" x:Name="ss"/>
+									 Maximum="50" Minimum="0"/>
 					<ui:TitledSlider Title="	 heave threshold - will be multiplied by 0.01"
 									 Value="{Binding Thresh_sh, Mode=TwoWay}"
 									 TickFrequency = "1" IsSnapToTickEnabled = "True"
-									 Maximum="50" Minimum="0" x:Name="sh"/>
+									 Maximum="50" Minimum="0"/>
 					<ui:TitledSlider Title="	 Load filter factor"
 									 Value="{Binding Filter_L, Mode=TwoWay}"
 									 TickFrequency = "1" IsSnapToTickEnabled = "True"
-									 Maximum="50" Minimum="1" x:Name="fl"/>
+									 Maximum="50" Minimum="0"/>
 					<ui:TitledSlider Title="	 Oversteer sway scale %"
 									 Value="{Binding SwayScale, Mode=TwoWay}"
 									 TickFrequency = "1" IsSnapToTickEnabled = "True"
-									 Maximum="190" Minimum="1" x:Name="sg"/>
+									 Maximum="50" Minimum="0"/>
 					<ui:TitledSlider Title="	 Oversteer yaw scale %"
 									 Value="{Binding YawScale, Mode=TwoWay}"
 									 TickFrequency = "1" IsSnapToTickEnabled = "True"
-									 Maximum="190" Minimum="1" x:Name="yg"/>
-                <ui:TitledSlider Title="	 RangeyRover Sway factor %"
+									 Maximum="50" Minimum="0"/>
+					<ui:TitledSlider Title="	 RangeyRover Sway factor %"
 									 Value="{Binding RRfactor, Mode=TwoWay}"
 									 TickFrequency = "1" IsSnapToTickEnabled = "True"
-									 Maximum="190" Minimum="1" x:Name="mg"/>
-            </StackPanel>
-			</styles:SHSection>
+									 Maximum="50" Minimum="0"/>
+			</StackPanel>
 		</Grid>
 </UserControl>

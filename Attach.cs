@@ -41,14 +41,14 @@ namespace blekenbleu.loaded
 			this.AttachDelegate("RRVlong",		() => Vlong);		// usually SpeedKmh
 			this.AttachDelegate("RRSwayRadians",() => SwayRadians);
 			this.AttachDelegate("RRSwayRatio",  () => SwayRatio);
-			this.AttachDelegate("RRSwayScale", () => RRSwayScale);
+			this.AttachDelegate("RRSwayScale",	() => RRSwayScale);
 			this.AttachDelegate("RRfront_slip", () => front_slip_angle);
-			this.AttachDelegate("RRYawRadians",() => YawRadians);
-			this.AttachDelegate("RRyawSway",() => RRyawSway);
+			this.AttachDelegate("RRYawRadians",	() => YawRadians);
+			this.AttachDelegate("RRyawSway",	() => RRyawSway);
 			
 			this.AttachDelegate("oops",			() => oops);
 			if (GameDBText == "AssettoCorsa")
-				this.AttachDelegate("ACprodFRslip",	() => ACprodFRslip);
+				this.AttachDelegate("ACprodFRslip",() => ACprodFRslip);
 
 			if (null != DeflStr)
 			{
@@ -57,11 +57,11 @@ namespace blekenbleu.loaded
 				this.AttachDelegate("RLdefl",	() => DeflRL);
 				this.AttachDelegate("RRdefl",	() => DeflRR);
 				this.AttachDelegate("Defl",		() => (DeflFL + DeflFR + DeflRL + DeflRR) / 4);
-				this.AttachDelegate("DeflPitch", () => (DeflFL + DeflFR - (DeflRL + DeflRR)));
-				this.AttachDelegate("DeflRollF", () => (DeflFL - DeflFR));
-				this.AttachDelegate("DeflRollR", () => (DeflRL - DeflRR));
-				this.AttachDelegate("DeflHeaveR", () => (DeflRL + DeflRR) / 2);
-				this.AttachDelegate("DeflHeaveF", () => (DeflFL + DeflFR) / 2);
+				this.AttachDelegate("DeflPitch",() => (DeflFL + DeflFR - (DeflRL + DeflRR)));
+				this.AttachDelegate("DeflRollF",() => (DeflFL - DeflFR));
+				this.AttachDelegate("DeflRollR",() => (DeflRL - DeflRR));
+				this.AttachDelegate("DeflHeaveR",() => (DeflRL + DeflRR) / 2);
+				this.AttachDelegate("DeflHeaveF",() => (DeflFL + DeflFR) / 2);
 			}
 			if (null != LoadStr)
 			{
