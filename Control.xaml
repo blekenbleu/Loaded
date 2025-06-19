@@ -34,15 +34,15 @@
 					<ui:TitledSlider Title="	 Oversteer sway scale %"
 									 Value="{Binding SwayScale, Mode=TwoWay}"
 									 TickFrequency = "1" IsSnapToTickEnabled = "True"
-									 Maximum="50" Minimum="0"/>
+									 Maximum="190" Minimum="1"/>
 					<ui:TitledSlider Title="	 Oversteer yaw scale %"
 									 Value="{Binding YawScale, Mode=TwoWay}"
 									 TickFrequency = "1" IsSnapToTickEnabled = "True"
-									 Maximum="50" Minimum="0"/>
+									 Maximum="190" Minimum="1"/>
 					<ui:TitledSlider Title="	 RangeyRover Sway factor %"
 									 Value="{Binding RRfactor, Mode=TwoWay}"
 									 TickFrequency = "1" IsSnapToTickEnabled = "True"
-									 Maximum="50" Minimum="0"/>
+									 Maximum="190" Minimum="1"/>
 			</StackPanel>
 		</Grid>
 </UserControl>
