@@ -8,7 +8,7 @@ namespace blekenbleu.loaded
 		double LoadFL, LoadFR, LoadRL, LoadRR, DeflFL, DeflFR, DeflRL, DeflRR;
 		double LPyaw = 0, LPsway = 0;
 		double ACprodFRslip = 0;
-		double Loads, Heave, YawRate, Steering, Vsway, KSwayAcc, KYawRate;
+		double Loads, Heave, YawRate, Steering, Vsway;
 		double SurgeAcc = 0, Roll = 0, DRoll = 0, Pitch = 0, DPitch = 0;
 
 		void Attach()
@@ -25,12 +25,12 @@ namespace blekenbleu.loaded
 			this.AttachDelegate("DRoll",		() => DRoll);
 			this.AttachDelegate("DPitch",		() => DPitch);
 			this.AttachDelegate("OverSteer",	() => OverSteer()); // attitude - trajectory: ayaw - View.Model.YawScale * asway
-			this.AttachDelegate("SpeedKmh",		() => SpeedKmh);	// Kalman-filtered SpeedKmh
-			this.AttachDelegate("KSwayAcc",		() => KSwayAcc);	// Kalman-filtered Sway Acceleration
+			this.AttachDelegate("SpeedKmh",		() => Paused ? 0 : Kalman.Filter(SpeedKmh, ref Kkmh));	// Kalman-filtered SpeedKmh
+			this.AttachDelegate("KSwayAcc",		() => Paused ? 0 : Kalman.Filter(SwayAcc, 0.8, ref Kswa));
 			this.AttachDelegate("SwayRate",		() => SwayRate);	// 1000 * SwayAcc / SpeedKmh
 			this.AttachDelegate("Vsway",		() => Vsway);		// game dependent
-			this.AttachDelegate("YawRate",		() => YawRate);		// OrientationYawVelocity radians per second
-			this.AttachDelegate("KYawRate",		() => KYawRate);	// Kalman-filtered OrientationYawVelocity radians per second
+			this.AttachDelegate("YawRate",		() => YawRate);     // OrientationYawVelocity radians per second
+			this.AttachDelegate("KYawRate",		() => Paused ? 0 : Kalman.Filter(YawRate, ref Kyaw));
 			this.AttachDelegate("YawSway",		() => YawSway);
 
 			/// RangeyRover properties

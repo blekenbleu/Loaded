@@ -28,7 +28,7 @@ namespace blekenbleu.loaded
 
 			// division blows up near 0 YawRate;  avoid Yaw and Sway of different signs
 			if (5000 > Gct && 9 > YawRate * YawRate && 25 > SwayRate * SwayRate && 1 > SwayAcc * SwayAcc
-				&& 1 > KSwayAcc * KSwayAcc && 0 != YawRate && 0 <= SwayRate * YawRate && 0 < SwayRate * Steering)
+				&& 0 != YawRate && 0 <= SwayRate * YawRate && 0 < SwayRate * Steering)
 			{   // relatively small YawRate / SwayRate are nearly linear
 				// rescale yaw and sway to approximate Steering range
 				double Absteer = Math.Abs(100 * Steering);

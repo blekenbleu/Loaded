@@ -16,9 +16,8 @@ namespace blekenbleu.loaded
  */
 		double MatchRates() // multiplied by SwayRadians
 		{
-			RRgain = 0.01 * View.Model.RRfactor;
-			if (Paused || 1 < SwayAcc * SwayAcc || 1 < KSwayAcc * KSwayAcc
-			 || 20000 < gainCt || 0 == SwayRadians || 0 > YawRadians / SwayRadians)
+			RRgain = 0.001 * View.Model.RRfactor;
+			if (Paused || 20000 < gainCt || 0 == SwayRadians || 0 > YawRadians / SwayRadians)
 				return RRgain;
 
 			double ayaw = Math.Abs(YawRadians);
@@ -28,11 +27,11 @@ namespace blekenbleu.loaded
 
 			LPfilter(ref MRyaw, 10, 40000 * ayaw);
 			LPfilter(ref MRsway, 10, 40000 * asway);
-			RRgain = 100 * MRyaw / MRsway;	// unity gain is 100 on slider
+			RRgain = 1000 * MRyaw / MRsway;	// unity gain is 100 on slider
 			gainCt++;
 			gainTot += (1 > RRgain) ? 1 : 190 < RRgain ? 190 : RRgain;
 			View.Model.RRfactor = (int)(0.5 + gainTot / gainCt);
-			return 0.01 * View.Model.RRfactor;
+			return 0.001 * View.Model.RRfactor;
 		}
 
 		// AttachDelegate() calls this

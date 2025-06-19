@@ -162,7 +162,7 @@ namespace blekenbleu.loaded
 			{
 				pm = pluginManager;
                 // skip LPfilter() if not updating
-                Paused = 0 == data.NewData.SpeedKmh;
+                Paused = 0 == (SpeedKmh = data.NewData.SpeedKmh);
                 PacketTime = data.NewData.CurrentLapTime;
 				Heave = data.NewData.AccelerationHeave ?? 0;
 				SurgeAcc = data.NewData.AccelerationSurge ?? 0;
@@ -176,15 +176,8 @@ namespace blekenbleu.loaded
 
                 // Local velocities and acceleration
 				SwayAcc = data.NewData.AccelerationSway ?? 0;
-				YawRate = 50 < data.NewData.OrientationYawVelocity ? 50 : data.NewData.OrientationYawVelocity;	// radians per second?
-
-				if (!Paused)
-				{
-					KSwayAcc = Kalman.Filter(SwayAcc, 0.8, ref Kswa);
-					KYawRate = Kalman.Filter(YawRate, ref Kyaw);
-                	SpeedKmh = Kalman.Filter(data.NewData.SpeedKmh, ref Kkmh);
-				} else KSwayAcc = KYawRate = SpeedKmh = 0;
-
+				// radians per second?
+				YawRate = 50 < data.NewData.OrientationYawVelocity ? 50 : data.NewData.OrientationYawVelocity;
 				SwayRate = (5 < SpeedKmh) ? 1000 * SwayAcc / SpeedKmh : 0;
 
 				// game specific properties
