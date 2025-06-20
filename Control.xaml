@@ -34,6 +34,26 @@
 									 Maximum="50" Minimum="0"/>
 
 					<styles:SHSubSection Title="Slip Angle Controls"/>
+					<ui:TitledSlider Title="	 Oversteer Steering factor"
+									 Value="{Binding SteerFact, Mode=TwoWay}"
+									 TickFrequency = "1" IsSnapToTickEnabled = "True"
+									 Maximum="100" Minimum="50"/>
+					<StackPanel Orientation="Horizontal" FlowDirection="LeftToRight" HorizontalAlignment="Center">
+						<Button x:Name="b0" Background="{Binding ModeColor}" Content="{Binding Mode}"
+								Height="40" Click="Mode_Click"/>
+						<TextBlock Text="  "/>
+						<Button x:Name="b1" Background="Gray" Content=" Press to recalibrate   " Height="40"
+								Visibility="{Binding ButtonVisibility}" Click="Recal_Click"/>
+						<TextBlock Text="  "/>
+						<Border BorderBrush="{x:Null}" Height="40" Width="80" Background="White">
+							<TextBlock VerticalAlignment="Center" HorizontalAlignment="Center">
+								<Hyperlink RequestNavigate="Hyperlink_RequestNavigate"
+									NavigateUri="https://github.com/blekenbleu/Loaded?tab=readme-ov-file#loaded">
+									<Run FontWeight="Bold" FontSize="17" Text="Help"/>
+								</Hyperlink>
+							</TextBlock>
+						</Border>
+					</StackPanel>
 					<ui:TitledSlider Title="	 Oversteer sway scale %"
 									 Value="{Binding SwayScale, Mode=TwoWay}"
 									 TickFrequency = "1" IsSnapToTickEnabled = "True"
@@ -42,7 +62,7 @@
 									 Value="{Binding YawScale, Mode=TwoWay}"
 									 TickFrequency = "1" IsSnapToTickEnabled = "True"
 									 Maximum="190" Minimum="1"/>
-					<ui:TitledSlider Title="	 RangeyRover Sway factor %"
+					<ui:TitledSlider Title="	 RangeyRover Sway scale %"
 									 Value="{Binding RRfactor, Mode=TwoWay}"
 									 TickFrequency = "1" IsSnapToTickEnabled = "True"
 									 Maximum="190" Minimum="1"/>

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using System.Windows;
 
 namespace blekenbleu.loaded
 {
@@ -63,6 +64,13 @@ namespace blekenbleu.loaded
 			set { SetField(ref filter_L, value, nameof(Filter_L)); }
 		}
 
+		private int steerFact = 70;
+		public int SteerFact
+		{
+			get => steerFact;
+			set { SetField(ref steerFact, value, nameof(SteerFact)); }
+		}
+
 		private int matchGain = 20;
 		public int RRfactor
 		{
@@ -82,6 +90,43 @@ namespace blekenbleu.loaded
 		{
 			get => swayGain;
 			set { SetField(ref swayGain, value, nameof(SwayScale)); }
+		}
+
+		private Visibility _svis = Visibility.Hidden;
+		public Visibility ButtonVisibility	  // must be public for XAML Binding
+		{
+			get => _svis;
+			set
+			{
+				SetField(ref _svis, value, nameof(ButtonVisibility));
+				if (Visibility.Hidden == _svis)
+				{
+					ModeColor = "Green";
+					Mode = "Auto";
+				}
+				else Mode = "Manually";
+			}
+		}
+
+		private string _color = "Green";
+		public string ModeColor
+		{
+			get => _color;
+			set { SetField(ref _color, value, nameof(ModeColor)); }
+		}
+
+		private string _mode = "";
+		public string Mode
+		{
+			get => "Press to " + _mode + " scale";
+			set { SetField(ref _mode, value, nameof(Mode)); }
+		}
+
+		private bool _recal = false;
+		public bool Recal
+		{
+			get => _recal;
+			set { SetField(ref _recal, value, nameof(Recal)); }
 		}
 	}
 }

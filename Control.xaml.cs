@@ -1,4 +1,5 @@
 ﻿using System.Windows.Controls;
+using System.Windows;
 
 namespace blekenbleu.loaded
 {
@@ -11,7 +12,7 @@ namespace blekenbleu.loaded
 
 		public Control() =>	InitializeComponent();
 
-		public Control(Loaded plugin, string version) : this()
+		public Control(Loaded plugin) : this()
 		{
 			DataContext = Model = new Model();
 			Model.YawScale = plugin.Settings.SlipGain;
@@ -21,7 +22,26 @@ namespace blekenbleu.loaded
 			Model.Thresh_sh = plugin.Settings.Thresh_sh;
 			Model.Thresh_ss = plugin.Settings.Thresh_ss;
 			Model.Filter_L = plugin.Settings.Filter_L;
+			Model.ButtonVisibility = Visibility.Visible;
 			gl.Title = $"Load gain = {plugin.Settings.Gain:##0.00}";
+		}
+
+		private void Hyperlink_RequestNavigate(object sender,
+									System.Windows.Navigation.RequestNavigateEventArgs e)
+		{
+			System.Diagnostics.Process.Start(e.Uri.AbsoluteUri);
+		}
+
+		private void Mode_Click(object sender, RoutedEventArgs e)  // handle button clicks
+		{
+			
+			Model.ButtonVisibility = (Visibility.Visible == Model.ButtonVisibility) ?
+									Visibility.Hidden : Visibility.Visible;
+		}
+
+		private void Recal_Click(object sender, RoutedEventArgs e)
+		{
+			Model.Recal = !Model.Recal;
 		}
 	}
 }

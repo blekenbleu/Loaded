@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows;
 
 namespace blekenbleu.loaded
 {
@@ -17,12 +18,12 @@ namespace blekenbleu.loaded
 		double MatchRates() // multiplied by SwayRadians
 		{
 			RRgain = 0.001 * View.Model.RRfactor;
-			if (Paused || 20000 < gainCt || 0 == SwayRadians || 0 > YawRadians / SwayRadians)
+			if (Paused || 20000 < gainCt || 0D == SwayRadians || Math.Sign(YawRadians) != Math.Sign(SwayRadians))
 				return RRgain;
 
 			double ayaw = Math.Abs(YawRadians);
 			double asway = Math.Abs(SwayRadians);
-			if (ayaw > 0.01 || asway > .1)
+			if (ayaw > 0.01D || asway > .1D)
 				return RRgain;
 
 			LPfilter(ref MRyaw, 10, 40000 * ayaw);
@@ -38,6 +39,9 @@ namespace blekenbleu.loaded
 		// property names set in Game(); values in DataUpdate()
 		double RangeyRover()
 		{   // slip angles by simplified equation,  ignoring CoG
+			Srun = 0;
+			if (19999 > gainCt && Visibility.Visible == View.Model.ButtonVisibility && "Green" == View.Model.ModeColor)
+				View.Model.ModeColor = "Red";
 			Vlong = (GameDBText != "Automobilista2") ? SpeedKmh / 3:
 									- Prop("DataCorePlugin.GameRawData.mLocalVelocity03");
 

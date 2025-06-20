@@ -21,6 +21,7 @@ namespace blekenbleu.loaded
         // Typical steering angle 24 degrees; set to game's car value
         readonly float stang = -24;			// change sign to match OrientationYawVelocity, AccelerationSway 
         readonly double Rd = 180 / Math.PI;
+		ushort Srun;
 
 
         /// <summary>
@@ -105,6 +106,7 @@ namespace blekenbleu.loaded
 			Kyaw = Kalman.Init();
 			Kswa = Kalman.Init();
 			Kkmh = Kalman.Init();
+			Srun = 0;		// try to detect OverSteer() or RangeyRover()
 		}
 
 		/// <summary>
@@ -115,7 +117,7 @@ namespace blekenbleu.loaded
 		/// <returns></returns>
 		public System.Windows.Controls.Control GetWPFSettingsControl(PluginManager pluginManager)
 		{
-			return View = new Control(this, PluginVersion);
+			return View = new Control(this);
 		}
 
 		PluginManager pm;
@@ -161,6 +163,19 @@ namespace blekenbleu.loaded
             try
 			{
 				pm = pluginManager;
+
+				if (View.Model.Recal)
+				{
+					Gtot = Stot = gainTot = Gct = gainCt = Sct = 0;
+					View.Model.Recal = false;
+				}
+				if (10 < Srun)	// OverSteer(), RangeyRover() heartbeat
+				{
+					Srun = 0;
+					if ("Red" == View.Model.ModeColor)
+						View.Model.ModeColor = "Green";
+				} else Srun++;
+
                 // skip LPfilter() if not updating
                 Paused = 0 == (SpeedKmh = data.NewData.SpeedKmh);
                 PacketTime = data.NewData.CurrentLapTime;
