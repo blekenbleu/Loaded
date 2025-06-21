@@ -48,14 +48,6 @@ namespace blekenbleu.loaded
 		public void End(PluginManager pluginManager)
 		{
 			// Save settings
-			Settings.RRscale = View.Model.RRscale;
-			Settings.SwayScale = View.Model.SwayScale;
-			Settings.SteerFact = View.Model.SteerFact;
-			Settings.YawScale  = View.Model.YawScale;
-			Settings.Filter_L  = View.Model.Filter_L;
-			Settings.Thresh_sv = View.Model.Thresh_sv;
-			Settings.Thresh_sh = View.Model.Thresh_sh;
-			Settings.Thresh_ss = View.Model.Thresh_ss;
 			this.SaveCommonSettings("GeneralSettings", Settings);
 		}
 

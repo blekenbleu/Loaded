@@ -36,70 +36,68 @@ namespace blekenbleu.loaded
 
 	public class Model : NotifyPropertyChanged	// XAML DataContext
 	{
-		private short thresh_sv = 3;
+        readonly Settings Set;
+
+		public Model(Loaded plugin)
+		{
+			Set = plugin.Settings;
+		}
+
 		public short Thresh_sv
 		{
-			get => thresh_sv;
-			set { SetField(ref thresh_sv, value, nameof(Thresh_sv)); }
+			get => Set.thresh_sv;
+			set { SetField(ref Set.thresh_sv, value, nameof(Thresh_sv)); }
 		}
 
-		private short thresh_sh = 15;
 		public short Thresh_sh
 		{
-			get => thresh_sh;
-			set { SetField(ref thresh_sh, value, nameof(Thresh_sh)); }
+			get => Set.thresh_sh;
+			set { SetField(ref Set.thresh_sh, value, nameof(Thresh_sh)); }
 		}
 
-		private short thresh_ss = 15;
 		public short Thresh_ss
 		{
-			get => thresh_ss;
-			set { SetField(ref thresh_ss, value, nameof(Thresh_ss)); }
+			get => Set.thresh_ss;
+			set { SetField(ref Set.thresh_ss, value, nameof(Thresh_ss)); }
 		}
 
-		private short filter_L = 15;
 		public short Filter_L
 		{
-			get => filter_L;
-			set { SetField(ref filter_L, value, nameof(Filter_L)); }
+			get => Set.filter_L;
+			set { SetField(ref Set.filter_L, value, nameof(Filter_L)); }
 		}
 
-		private short steerFact = 70;
 		public short SteerFact
 		{
-			get => steerFact;
-			set { SetField(ref steerFact, value, nameof(SteerFact)); }
+			get => Set.steerFact;
+			set { SetField(ref Set.steerFact, value, nameof(SteerFact)); }
 		}
 
-		private int rrScale = 20;
 		public int RRscale
 		{
-			get => rrScale;
-			set { SetField(ref rrScale, value, nameof(RRscale)); }
+			get => Set.rrScale;
+			set { SetField(ref Set.rrScale, value, nameof(RRscale)); }
 		}
 
-		private int yawScale = 20;
 		public int YawScale
 		{
-			get => yawScale;
-			set { SetField(ref yawScale, value, nameof(YawScale)); }
+			get => Set.yawScale;
+			set { SetField(ref Set.yawScale, value, nameof(YawScale)); }
 		}
 
-		private int swayScale = 20;
 		public int SwayScale
 		{
-			get => swayScale;
-			set { SetField(ref swayScale, value, nameof(SwayScale)); }
+			get => Set.swayScale;
+			set { SetField(ref Set.swayScale, value, nameof(SwayScale)); }
 		}
 
-		private Visibility _svis = Visibility.Hidden;
 		public Visibility ButtonVisibility		// must be public for XAML Binding
 		{
-			get => _svis;
+			get => Set.svis;
 			set
 			{
-				SetField(ref _svis, value, nameof(ButtonVisibility));
-				if (Visibility.Hidden == _svis)
+				SetField(ref Set.svis, value, nameof(ButtonVisibility));
+				if (Visibility.Hidden == Set.svis)
 				{
 					ModeColor = "Green";
 					Mode = "Auto";
@@ -108,25 +106,22 @@ namespace blekenbleu.loaded
 			}
 		}
 
-		private string _color = "Green";
 		public string ModeColor
 		{
-			get => _color;
-			set { SetField(ref _color, value, nameof(ModeColor)); }
+			get => Set.color;
+			set { SetField(ref Set.color, value, nameof(ModeColor)); }
 		}
 
-		private string _mode = "";
 		public string Mode
 		{
-			get => "Press to " + _mode + " scale";
-			set { SetField(ref _mode, value, nameof(Mode)); }
+			get => "Press to " + Set.mode + " scale";
+			set { SetField(ref Set.mode, value, nameof(Mode)); }
 		}
 
-		private bool _recal = false;
 		public bool Recal
 		{
-			get => _recal;
-			set { SetField(ref _recal, value, nameof(Recal)); }
+			get => Set.recal;
+			set { SetField(ref Set.recal, value, nameof(Recal)); }
 		}
 	}
 }
