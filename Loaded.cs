@@ -18,16 +18,16 @@ namespace blekenbleu.loaded
 		public Settings Settings;
 		KalmanFilter Kalman;
 		double[] Kyaw, Kswa, Kkmh;
-        // Typical steering angle 24 degrees; set to game's car value
-        readonly float stang = -24;			// change sign to match OrientationYawVelocity, AccelerationSway 
-        readonly double Rd = 180 / Math.PI;
+		// Typical steering angle 24 degrees; set to game's car value
+		readonly float stang = -24;			// change sign to match OrientationYawVelocity, AccelerationSway 
+		readonly double Rd = 180 / Math.PI;
 		ushort Srun;
 
 
-        /// <summary>
-        /// Instance of the current plugin manager
-        /// </summary>
-        public PluginManager PluginManager { get; set; }
+		/// <summary>
+		/// Instance of the current plugin manager
+		/// </summary>
+		public PluginManager PluginManager { get; set; }
 
 		/// <summary>
 		/// Gets the left menu icon. Icon must be 24x24 and compatible with black and white display.
@@ -40,18 +40,19 @@ namespace blekenbleu.loaded
 		/// </summary>
 		public string LeftMenuTitle => "Loaded " + PluginVersion;
 
-        /// <summary>
-        /// Called at plugin manager stop, close/dispose anything needed here !
-        /// Plugins are rebuilt at game change
-        /// </summary>
-        /// <param name="pluginManager"></param>
-        public void End(PluginManager pluginManager)
+		/// <summary>
+		/// Called at plugin manager stop, close/dispose anything needed here !
+		/// Plugins are rebuilt at game change
+		/// </summary>
+		/// <param name="pluginManager"></param>
+		public void End(PluginManager pluginManager)
 		{
 			// Save settings
+			Settings.RRscale = View.Model.RRscale;
+			Settings.SwayScale = View.Model.SwayScale;
+			Settings.SteerFact = View.Model.SteerFact;
+			Settings.YawScale  = View.Model.YawScale;
 			Settings.Filter_L  = View.Model.Filter_L;
-			Settings.MatchGain = View.Model.RRfactor;
-			Settings.SlipGain  = View.Model.YawScale;
-			Settings.SwayGain  = View.Model.SwayScale;
 			Settings.Thresh_sv = View.Model.Thresh_sv;
 			Settings.Thresh_sh = View.Model.Thresh_sh;
 			Settings.Thresh_ss = View.Model.Thresh_ss;
@@ -82,7 +83,7 @@ namespace blekenbleu.loaded
 
 				if (1 > bump)
 					bump = 1;
-                Settings.Gain += bump;
+				Settings.Gain += bump;
 				View.Dispatcher.Invoke((Action)(() =>
 					{ View.gl.Title = $"Load gain = {Settings.Gain:##0.00}"; }
 				));
@@ -160,13 +161,13 @@ namespace blekenbleu.loaded
 			if (!data.GameRunning || null == data.OldData || null == data.NewData || null == data.NewData.CarId)
 				return;
 
-            try
+			try
 			{
 				pm = pluginManager;
 
 				if (View.Model.Recal)
 				{
-					Gtot = Stot = gainTot = Gct = gainCt = Sct = 0;
+					Gtot = Stot = scaleTot = Gct = scaleCt = Sct = 0;
 					View.Model.Recal = false;
 				}
 				if (10 < Srun)	// OverSteer(), RangeyRover() heartbeat
@@ -176,20 +177,20 @@ namespace blekenbleu.loaded
 						View.Model.ModeColor = "Green";
 				} else Srun++;
 
-                // skip LPfilter() if not updating
-                Paused = 0 == (SpeedKmh = data.NewData.SpeedKmh);
-                PacketTime = data.NewData.CurrentLapTime;
+				// skip LPfilter() if not updating
+				Paused = 0 == (SpeedKmh = data.NewData.SpeedKmh);
+				PacketTime = data.NewData.CurrentLapTime;
 				Heave = data.NewData.AccelerationHeave ?? 0;
 				SurgeAcc = data.NewData.AccelerationSurge ?? 0;
 
 				var old = Pitch;								// potentially for load estimates
 				Pitch = data.NewData.OrientationPitch;
-                DPitch = Pitch - old;
+				DPitch = Pitch - old;
 				old = Roll;
 				Roll = data.NewData.OrientationRoll;
 				DRoll = Roll - old;
 
-                // Local velocities and acceleration
+				// Local velocities and acceleration
 				SwayAcc = data.NewData.AccelerationSway ?? 0;
 				// radians per second?
 				YawRate = 50 < data.NewData.OrientationYawVelocity ? 50 : data.NewData.OrientationYawVelocity;
@@ -204,9 +205,9 @@ namespace blekenbleu.loaded
 					ACprodFRslip = Slip('4') * Slip('3') - Slip('2') * Slip('1');
 			} catch (Exception e)
 			{
-                string oops = e?.ToString();
-                SimHub.Logging.Current.Info("DataUpdate() Failed: " + oops);
-            }
-        }	// DataUpdate()
+				string oops = e?.ToString();
+				SimHub.Logging.Current.Info("DataUpdate() Failed: " + oops);
+			}
+		}	// DataUpdate()
 	}
 }

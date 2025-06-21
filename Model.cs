@@ -64,36 +64,36 @@ namespace blekenbleu.loaded
 			set { SetField(ref filter_L, value, nameof(Filter_L)); }
 		}
 
-		private int steerFact = 70;
-		public int SteerFact
+		private short steerFact = 70;
+		public short SteerFact
 		{
 			get => steerFact;
 			set { SetField(ref steerFact, value, nameof(SteerFact)); }
 		}
 
-		private int matchGain = 20;
-		public int RRfactor
+		private int rrScale = 20;
+		public int RRscale
 		{
-			get => matchGain;
-			set { SetField(ref matchGain, value, nameof(RRfactor)); }
+			get => rrScale;
+			set { SetField(ref rrScale, value, nameof(RRscale)); }
 		}
 
-		private int slipGain = 20;
+		private int yawScale = 20;
 		public int YawScale
 		{
-			get => slipGain;
-			set { SetField(ref slipGain, value, nameof(YawScale)); }
+			get => yawScale;
+			set { SetField(ref yawScale, value, nameof(YawScale)); }
 		}
 
-		private int swayGain = 20;
+		private int swayScale = 20;
 		public int SwayScale
 		{
-			get => swayGain;
-			set { SetField(ref swayGain, value, nameof(SwayScale)); }
+			get => swayScale;
+			set { SetField(ref swayScale, value, nameof(SwayScale)); }
 		}
 
 		private Visibility _svis = Visibility.Hidden;
-		public Visibility ButtonVisibility	  // must be public for XAML Binding
+		public Visibility ButtonVisibility		// must be public for XAML Binding
 		{
 			get => _svis;
 			set

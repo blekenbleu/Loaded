@@ -14,16 +14,18 @@ namespace blekenbleu.loaded
 
 		public Control(Loaded plugin) : this()
 		{
+			gl.Title = $"Load gain = {plugin.Settings.Gain:##0.00}";
 			DataContext = Model = new Model();
-			Model.YawScale = plugin.Settings.SlipGain;
-			Model.SwayScale = plugin.Settings.SwayGain;
-			Model.RRfactor = plugin.Settings.MatchGain;
+			Model.ButtonVisibility = Visibility.Visible;
+			Model.RRscale	= plugin.Settings.RRscale;
+			Model.SteerFact = plugin.Settings.SteerFact;
+			Model.SwayScale = plugin.Settings.SwayScale;
+			Model.YawScale  = plugin.Settings.YawScale;
+
 			Model.Thresh_sv = plugin.Settings.Thresh_sv;
 			Model.Thresh_sh = plugin.Settings.Thresh_sh;
 			Model.Thresh_ss = plugin.Settings.Thresh_ss;
-			Model.Filter_L = plugin.Settings.Filter_L;
-			Model.ButtonVisibility = Visibility.Visible;
-			gl.Title = $"Load gain = {plugin.Settings.Gain:##0.00}";
+			Model.Filter_L  = plugin.Settings.Filter_L;
 		}
 
 		private void Hyperlink_RequestNavigate(object sender,

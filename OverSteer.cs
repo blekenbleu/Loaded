@@ -24,7 +24,7 @@ namespace blekenbleu.loaded
 			// remove slider 100x but apply YawRate and SwayRate scale factors to match Steering degrees
 			var yaw = 0.0025 * View.Model.YawScale * YawRate;
 			var sway = 0.001 * View.Model.SwayScale * SwayRate;
-            LPfilter(ref YawSway, 10, yaw - sway);
+			LPfilter(ref YawSway, 10, yaw - sway);
 			var os = Math.Abs(YawSway) - Math.Abs(Steering + YawSway);
 			return os;
 		}
@@ -47,22 +47,22 @@ namespace blekenbleu.loaded
  			if (1F < SwayAcc * SwayAcc)
 				return OS();
 			// avoid Steering, Yaw and Sway of different signs
-			if (Math.Sign(SwayRate) != Math.Sign(YawRate);
-                return OS();
-            if (Math.Sign(SwayRate) != Math.Sign(Steering))
+			if (Math.Sign(SwayRate) != Math.Sign(YawRate))
+				return OS();
+			if (Math.Sign(SwayRate) != Math.Sign(Steering))
 				return OS();
 
 			// relatively small YawRate / SwayRate are nearly linear
 			// rescale yaw and sway to approximate Steering range
 			var Absteer = Math.Abs(100 * Steering);
-			LPfilter(ref LPyaw, 10, Math.Abs(0.25D * YawRate));  // opposite sign from Steering
+			LPfilter(ref LPyaw, 10, Math.Abs(0.25D * YawRate));	// opposite sign from Steering
 			LPfilter(ref LPsway, 10, Math.Abs(0.1D * SwayRate));// opposite sign from Steering;
 
 			// rescale for sliders
-			scale100 = Absteer / LPyaw;      // sometimes still negative!!
+			scale100 = Absteer / LPyaw;		// sometimes still negative!!
 			if (1 < scale100 && 190 > scale100)
 			{
-				Gct++;                              // average estimated scale factor
+				Gct++;								// average estimated scale factor
 				Gtot += scale100;
 				//					int iscale = (int)(0.5 + Gtot / Gct);
 				//					if (iscale != View.Model.YawScale)
@@ -76,7 +76,7 @@ namespace blekenbleu.loaded
 			scale100 = Absteer / LPsway;
 			if (1 < scale100 && 190 > scale100)
 			{
-				Sct++;                            // average estimated scale factor
+				Sct++;							// average estimated scale factor
 				Stot += scale100;
 				View.Model.SwayScale = (int)(0.5 + Stot / Sct);
 			}

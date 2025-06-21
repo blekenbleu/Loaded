@@ -1,6 +1,6 @@
 public class KalmanFilter
 {
-    private readonly double Q = 0.125;
+	private readonly double Q = 0.125;
 
 	public KalmanFilter()		// linear quadratic estimation
 	{
@@ -28,6 +28,6 @@ public class KalmanFilter
 
 		double d = input - filtered;
 		// weight change by uncertainty
-        return k[0] = filtered + uncertainty * d;
+		return k[0] = filtered + uncertainty * d;
 	}
 }
