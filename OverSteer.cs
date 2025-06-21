@@ -32,7 +32,8 @@ namespace blekenbleu.loaded
 		{
 			double scale100;			// sliders are approx 100x unity
 			Srun = 0;
-			if (Settings.Gct < 4999 && Visibility.Visible == View.Model.ButtonVisibility && "Green" == View.Model.ModeColor)
+			if (Settings.Gct < 4999 && Visibility.Visible == View.Model.ButtonVisibility
+				&& "Green" == View.Model.ModeColor)
 				View.Model.ModeColor = "Red";
 
 			if (5 > SpeedKmh)
@@ -54,8 +55,8 @@ namespace blekenbleu.loaded
 			// relatively small YawRate / SwayRate are nearly linear
 			// rescale yaw and sway to approximate Steering range
 			var Absteer = Math.Abs(View.Model.SteerFact * Steering);
-			LPfilter(ref LPyaw, 10, Math.Abs(0.25D * YawRate));	// opposite sign from Steering
-			LPfilter(ref LPsway, 10, Math.Abs(0.1D * SwayRate));// opposite sign from Steering;
+			LPfilter(ref LPyaw, 10, Math.Abs(0.25D * YawRate));
+			LPfilter(ref LPsway, 10, Math.Abs(0.1D * SwayRate));
 
 			// rescale for sliders
 			scale100 = Absteer / LPyaw;		// sometimes still negative!!

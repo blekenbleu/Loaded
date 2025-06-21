@@ -1,4 +1,5 @@
 ﻿using System.Windows.Controls;
+using System.Windows.Navigation;
 using System.Windows;
 
 namespace blekenbleu.loaded
@@ -18,8 +19,7 @@ namespace blekenbleu.loaded
 			DataContext = Model = new Model(plugin);
 		}
 
-		private void Hyperlink_RequestNavigate(object sender,
-									System.Windows.Navigation.RequestNavigateEventArgs e)
+		private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
 		{
 			System.Diagnostics.Process.Start(e.Uri.AbsoluteUri);
 		}
