@@ -28,8 +28,10 @@ namespace blekenbleu.loaded
 			this.AttachDelegate("SpeedKmh",		() => Paused ? 0 : Kalman.Filter(SpeedKmh, ref Kkmh));	// Kalman-filtered SpeedKmh
 			this.AttachDelegate("KSwayAcc",		() => Paused ? 0 : Kalman.Filter(SwayAcc, 0.8, ref Kswa));
 			this.AttachDelegate("SwayRate",		() => SwayRate);	// 1000 * SwayAcc / SpeedKmh
+			this.AttachDelegate("SwayVsteer",	() => SwayVsteer);
 			this.AttachDelegate("Vsway",		() => Vsway);		// game dependent
 			this.AttachDelegate("YawRate",		() => YawRate);		// OrientationYawVelocity radians per second
+			this.AttachDelegate("YawVsteer",	() => YawVsteer);
 			this.AttachDelegate("KYawRate",		() => Paused ? 0 : Kalman.Filter(YawRate, ref Kyaw));
 			this.AttachDelegate("YawSway",		() => YawSway);
 
