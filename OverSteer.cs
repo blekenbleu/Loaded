@@ -8,7 +8,7 @@ namespace blekenbleu.loaded
 		ushort Gct = 0, Sct = 0;
 		double YawSway = 0;
 
-		// `OverSteer()` ignores steering; just sorts vehicle orientation vs trajectory
+		// `OverSteer()` sorts vehicle orientation vs trajectory
 		// Since radians per second can be well outside meaningful static radian ranges,
 		// Atan() calculations would be bizarre.
 
@@ -54,7 +54,7 @@ namespace blekenbleu.loaded
 
 			// relatively small YawRate / SwayRate are nearly linear
 			// rescale yaw and sway to approximate Steering range
-			var Absteer = Math.Abs(100 * Steering);
+			var Absteer = Math.Abs(View.Model.SteerFact * Steering);
 			LPfilter(ref LPyaw, 10, Math.Abs(0.25D * YawRate));	// opposite sign from Steering
 			LPfilter(ref LPsway, 10, Math.Abs(0.1D * SwayRate));// opposite sign from Steering;
 

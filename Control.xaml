@@ -38,7 +38,7 @@
 				<ui:TitledSlider Title="	 Oversteer Steering factor"
 									 Value="{Binding SteerFact, Mode=TwoWay}"
 									 TickFrequency = "1" IsSnapToTickEnabled = "True"
-									 Maximum="100" Minimum="50"/>
+									 Maximum="100" Minimum="20"/>
 				<StackPanel Orientation="Horizontal" FlowDirection="LeftToRight" HorizontalAlignment="Center">
 					<Button x:Name="b0" Background="{Binding ModeColor}" Content="{Binding Mode}"
 								Height="40" Click="Mode_Click"/>
