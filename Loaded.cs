@@ -117,7 +117,7 @@ namespace blekenbleu.loaded
 
 		double Prop(string parm)
 		{
-			if (0 == parm.Length)
+			if (0 == parm.Length || null == pm)
 				return 0;
 
 			var value = pm.GetPropertyValue(parm);
@@ -149,14 +149,14 @@ namespace blekenbleu.loaded
 		TimeSpan PacketTime = new TimeSpan();
 		public void DataUpdate(PluginManager pluginManager, ref GameData data)
 		{
+			pm = pluginManager;
+
 			// Update property values (declared in Init)
 			if (!data.GameRunning || null == data.OldData || null == data.NewData || null == data.NewData.CarId)
 				return;
 
 			try
 			{
-				pm = pluginManager;
-
 				if (View.Model.Recal)
 				{
 					Settings.Gtot = Settings.Stot = Settings.scaleTot = Settings.Gct = Settings.scaleCt = Settings.Sct = 0;
