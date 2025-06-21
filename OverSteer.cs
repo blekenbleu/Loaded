@@ -5,7 +5,6 @@ namespace blekenbleu.loaded
 {
 	public partial class Loaded
 	{
-		ushort Gct = 0, Sct = 0;
 		double YawSway = 0;
 
 		// `OverSteer()` sorts vehicle orientation vs trajectory
@@ -33,14 +32,14 @@ namespace blekenbleu.loaded
 		{
 			double scale100;			// sliders are approx 100x unity
 			Srun = 0;
-			if (Gct < 4999 && Visibility.Visible == View.Model.ButtonVisibility && "Green" == View.Model.ModeColor)
+			if (Settings.Gct < 4999 && Visibility.Visible == View.Model.ButtonVisibility && "Green" == View.Model.ModeColor)
 				View.Model.ModeColor = "Red";
 
 			if (5 > SpeedKmh)
 				return YawSway = 0D;
 
 			// division blows up near 0 YawRate
-			if (5000 <= Gct || 0D == YawRate)
+			if (5000 <= Settings.Gct || 0D == YawRate)
 				return OS();
  			if ((9F < YawRate * YawRate) || (25F < SwayRate * SwayRate))
 				return OS();
@@ -62,13 +61,13 @@ namespace blekenbleu.loaded
 			scale100 = Absteer / LPyaw;		// sometimes still negative!!
 			if (1 < scale100 && 190 > scale100)
 			{
-				Gct++;								// average estimated scale factor
-				Gtot += scale100;
-				//					int iscale = (int)(0.5 + Gtot / Gct);
+				Settings.Gct++;								// average estimated scale factor
+				Settings.Gtot += scale100;
+				//					int iscale = (int)(0.5 + Settings.Gtot / Settings.Gct);
 				//					if (iscale != View.Model.YawScale)
 				//					{
-				//						oops = $"OverSteer() Gct {Gct}";
-				View.Model.YawScale = (int)(0.5 + Gtot / Gct);
+				//						oops = $"OverSteer() Settings.Gct {Settings.Gct}";
+				View.Model.YawScale = (int)(0.5 + Settings.Gtot / Settings.Gct);
 				//					}
 			}
 			else oops = $"OverSteer() LPyaw scale {scale100}";
@@ -76,9 +75,9 @@ namespace blekenbleu.loaded
 			scale100 = Absteer / LPsway;
 			if (1 < scale100 && 190 > scale100)
 			{
-				Sct++;							// average estimated scale factor
-				Stot += scale100;
-				View.Model.SwayScale = (int)(0.5 + Stot / Sct);
+				Settings.Sct++;							// average estimated scale factor
+				Settings.Stot += scale100;
+				View.Model.SwayScale = (int)(0.5 + Settings.Stot / Settings.Sct);
 			}
 			else oops = $"OverSteer() LPsway scale {scale100}";
 			return OS();

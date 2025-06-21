@@ -167,7 +167,7 @@ namespace blekenbleu.loaded
 
 				if (View.Model.Recal)
 				{
-					Gtot = Stot = scaleTot = Gct = scaleCt = Sct = 0;
+					Settings.Gtot = Settings.Stot = Settings.scaleTot = Settings.Gct = Settings.scaleCt = Settings.Sct = 0;
 					View.Model.Recal = false;
 				}
 				if (10 < Srun)	// OverSteer(), RangeyRover() heartbeat

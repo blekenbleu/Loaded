@@ -43,7 +43,7 @@ namespace blekenbleu.loaded
 		}
 
 		bool Paused = false;
-		double SwayAcc = 0, SwayRate = 0, SpeedKmh = 0, Gtot = 0, Stot = 0;
+		double SwayAcc = 0, SwayRate = 0, SpeedKmh = 0;
 
 		internal void LPfilter(ref double dold, double factor, double dnew)
 		{

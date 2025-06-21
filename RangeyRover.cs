@@ -8,8 +8,6 @@ namespace blekenbleu.loaded
 		double MRyaw = 0, MRsway = 0, SwayRadians, YawRadians;
 		double yaw_rate, Vlateral, Vlong, RRSwayScale, RRscale;
 		double RRyawSway, front_slip_angle, SwayRatio;
-		double scaleTot = 0;
-		ushort scaleCt = 0;
 /*
  ;		The concept:  for low sway, yaw and trajectory should be similar and linearly related;
  ;		oversteer and understeer should come in with higher cornering loads and steering inputs.
@@ -18,7 +16,7 @@ namespace blekenbleu.loaded
 		double MatchRates() // multiplied by SwayRadians
 		{
 			RRscale = 0.001 * View.Model.RRscale;
-			if (Paused || 20000 < scaleCt || 0D == SwayRadians || Math.Sign(YawRadians) != Math.Sign(SwayRadians))
+			if (Paused || 20000 < Settings.scaleCt || 0D == SwayRadians || Math.Sign(YawRadians) != Math.Sign(SwayRadians))
 				return RRscale;
 
 			double ayaw = Math.Abs(YawRadians);
@@ -29,9 +27,9 @@ namespace blekenbleu.loaded
 			LPfilter(ref MRyaw, 10, 40000 * ayaw);
 			LPfilter(ref MRsway, 10, 40000 * asway);
 			RRscale = 1000 * MRyaw / MRsway;	// unity scale is 100 on slider
-			scaleCt++;
-			scaleTot += (1 > RRscale) ? 1 : 190 < RRscale ? 190 : RRscale;
-			View.Model.RRscale = (int)(0.5 + scaleTot / scaleCt);
+			Settings.scaleCt++;
+			Settings.scaleTot += (1 > RRscale) ? 1 : 190 < RRscale ? 190 : RRscale;
+			View.Model.RRscale = (int)(0.5 + Settings.scaleTot / Settings.scaleCt);
 			return 0.001 * View.Model.RRscale;
 		}
 
@@ -40,7 +38,7 @@ namespace blekenbleu.loaded
 		double RangeyRover()
 		{	// slip angles by simplified equation, ignoring CoG
 			Srun = 0;
-			if (19999 > scaleCt && Visibility.Visible == View.Model.ButtonVisibility
+			if (19999 > Settings.scaleCt && Visibility.Visible == View.Model.ButtonVisibility
 				&& "Green" == View.Model.ModeColor)
 				View.Model.ModeColor = "Red";
 
