@@ -8,7 +8,7 @@ namespace blekenbleu.loaded
 		double LoadFL, LoadFR, LoadRL, LoadRR, DeflFL, DeflFR, DeflRL, DeflRR;
 		double LPyaw = 0, LPsway = 0;
 		double ACprodFRslip = 0;
-		double Loads, Heave, YawRate, Steering, Vsway;
+		double Loads, Heave, YawRate, Steering, Steer2, Vsway;
 		double SurgeAcc = 0, Roll = 0, DRoll = 0, Pitch = 0, DPitch = 0;
 
 		void Attach()
@@ -38,6 +38,7 @@ namespace blekenbleu.loaded
 			/// RangeyRover properties
 			this.AttachDelegate("RangeyRover",	() => RangeyRover());// rear - front slip angle including steering
 			this.AttachDelegate("Steering",		() => Steering);	// game-dependent steering angle
+			this.AttachDelegate("Steer2",		() => -1 > Steer2 ? -2 : 1 < Steer2 ? 2 : - 2 * Steer2);	// game-dependent steering angle
 			this.AttachDelegate("RRyaw_rate",	() => yaw_rate);	// usually OrientationYawVelocity
 			this.AttachDelegate("RRVlateral",	() => Vlateral);	// usually AccelerationSway
 			this.AttachDelegate("RRVlong",		() => Vlong);		// usually SpeedKmh

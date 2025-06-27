@@ -190,7 +190,7 @@ namespace blekenbleu.loaded
 
 				// game specific properties
 				// Normalized steering input:   [ -1.0f <= Prop(Psteer) <= 1.0f ]
-				Steering = stang * Prop(Psteer);	// +/- 1 to -/+ degrees
+				Steering = stang * (Steer2 = Prop(Psteer));	// +/- 1 to -/+ degrees
 				Vsway = Prop(Psway);
 				Load();
 				if (GameDBText == "AssettoCorsa")
