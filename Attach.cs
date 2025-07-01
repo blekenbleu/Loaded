@@ -8,7 +8,7 @@ namespace blekenbleu.loaded
 		double LoadFL, LoadFR, LoadRL, LoadRR, DeflFL, DeflFR, DeflRL, DeflRR;
 		double LPyaw = 0, LPsway = 0;
 		double ACprodFRslip = 0;
-		double Loads, Heave, YawRate, Steering, Steer2, Vsway;
+		double Loads, Heave, YawRate, Steering, SteerPC, Vsway;
 		double SurgeAcc = 0, Roll = 0, DRoll = 0, Pitch = 0, DPitch = 0;
 
 		void Attach()
@@ -28,9 +28,11 @@ namespace blekenbleu.loaded
 			this.AttachDelegate("SpeedKmh",		() => Paused ? 0 : Kalman.Filter(SpeedKmh, ref Kkmh));	// Kalman-filtered SpeedKmh
 			this.AttachDelegate("KSwayAcc",		() => Paused ? 0 : Kalman.Filter(SwayAcc, 0.8, ref Kswa));
 			this.AttachDelegate("SwayRate",		() => SwayRate);	// 1000 * SwayAcc / SpeedKmh
+			this.AttachDelegate("SwayRate%",	() => 0.0025 * SwayRate);	// 1000 * SwayAcc / SpeedKmh
 			this.AttachDelegate("SwayVsteer",	() => SwayVsteer);
 			this.AttachDelegate("Vsway",		() => Vsway);		// game dependent
 			this.AttachDelegate("YawRate",		() => YawRate);		// OrientationYawVelocity radians per second
+			this.AttachDelegate("YawRate%",		() => 0.01 * YawRate);		// OrientationYawVelocity radians per second
 			this.AttachDelegate("YawVsteer",	() => YawVsteer);
 			this.AttachDelegate("KYawRate",		() => Paused ? 0 : Kalman.Filter(YawRate, ref Kyaw));
 			this.AttachDelegate("YawSway",		() => YawSway);
@@ -38,7 +40,7 @@ namespace blekenbleu.loaded
 			/// RangeyRover properties
 			this.AttachDelegate("RangeyRover",	() => RangeyRover());// rear - front slip angle including steering
 			this.AttachDelegate("Steering",		() => Steering);	// game-dependent steering angle
-			this.AttachDelegate("Steer2",		() => -1 > Steer2 ? -2 : 1 < Steer2 ? 2 : - 2 * Steer2);	// game-dependent steering angle
+			this.AttachDelegate("Steer%",		() => -SteerPC);		// game-dependent steering percent
 			this.AttachDelegate("RRyaw_rate",	() => yaw_rate);	// usually OrientationYawVelocity
 			this.AttachDelegate("RRVlateral",	() => Vlateral);	// usually AccelerationSway
 			this.AttachDelegate("RRVlong",		() => Vlong);		// usually SpeedKmh
