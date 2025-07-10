@@ -41,39 +41,11 @@ Front Right wheel load:   `loadFR = 25 + Loaded.Heave*Loaded.FRdefl/(Loaded.FRde
  OrientationYawVelocity, SpeedKmh
 - GlobalAccelerationG just is the negative of AccelerationSurge
 
-### motion formulae
-- AccelerationSway = SpeedKmh * SpeedKmh / CurveRadius  
- &emsp; *Calculate CurveRadius from SimHub AccelerationSway and SpeedKmh*
-- SideSlipAngle = SwayVelocity / SpeedKmh
- &emsp; (SwayVelocity aka lateral velocity)
-- Circular velocity = OrientationYawVelocity * CurveRadius
-- Since Circular velocity is basically SpeedKmh, then SpeedKmh = OrientationYawVelocity * CurveRadius  
-or OrientationYawVelocity = SpeedKmh / CurveRadius;
-- by substitution, AccelerationSway = SpeedKmh * OrientationYawVelocity  
-- [side slip rate = AccelerationSway - SpeedKmh * OrientationYawVelocity](https://www.reddit.com/r/FSAE/comments/125moie/comment/je6it6q/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button);  
-  &emsp; integrate side slip rate to obtain SideSlipAngle
-- [AccelerationSway = SpeedKmh * (OrientationYawVelocity + side slip rate)](https://www.racetechlab.com/basics-of-cornering/#lateral-acceleration-the-key-metric)
-
-### Approximations
-- Tire slip angles less than 6 degrees are most useful.
-- For angles less than 6 degrees, tan and arctan are nearly perfectly linear.
-- Don't bother applying those functions.
-- calculating slip angles for all 4 tires is wasteful;
- &emsp; slip angles mostly matter when large on heavily loaded side.
-
-### Per-wheel Slip angle equations [*from OptimumG’s seminars*](https://optimumg.com/wp-content/uploads/2019/09/RCE3.pdf)
-- SlipAngleLf = (LateralVelocity + YawVelocity * `Df`) / (SpeedKmh - YawVelocity * `Axf/2`) - SteeringAngleL  
-- SlipAngleRf = (LateralVelocity + YawVelocity * `Df`) / (SpeedKmh + YawVelocity * `Axf/2`) - SteeringAngleR  
-- SlipAngleLr = (LateralVelocity - YawVelocity * `Dr`) / (SpeedKmh - YawVelocity * `Axr/2`)  
-- SlipAngleRr = (LateralVelocity - YawVelocity * `Dr`) / (SpeedKmh + YawVelocity * `Axr/2`)  
-.. where:  
-- `Df` and `Dr` are distances from center of gravity to front and rear axles, respectively  
-- `Axf` and `Axr` are front and rear axle lengths, respectively  
-- note sign changes front-to-rear (`Df` vs `Dr`) and left-to-right (`Axf` or `Axr`)
+### [motion formulae, approximations](https://blekenbleu.github.io/SimHub/slip.htm#formulae)
 
 ## Observations
 - Acceleration Sway and OrientationYawVelocity are comparable
-	- if scaled approx 1:2, [**differences estimate understeer and oversteer**](https://github.com/blekenbleu/Loaded/blob/main/Oversteer.md#oversteer)
+	- if scaled approx 1:2, [**differences estimate understeer and oversteer**](https://blekenbleu.github.io/SimHub/Oversteer)
 	- added Gain adjustment to adaptively match small Sway and Yaw amplitudes
 	- try to ignore spikes observed in SimHub `OrientationYawVelocity` property plots
 	- save and restore all slider values
