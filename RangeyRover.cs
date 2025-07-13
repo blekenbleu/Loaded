@@ -55,7 +55,7 @@ namespace blekenbleu.loaded
 			}
 			else
 			{
-				yaw_rate = YawRate / 57;
+				yaw_rate = YawVel / 57;
 				Vlateral = 0.364 * SwayAcc;
 			}
 			YawRadians = yaw_rate / Vlong;

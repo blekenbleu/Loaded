@@ -11,7 +11,7 @@ namespace blekenbleu.loaded
 		// Since radians per second can be well outside meaningful static radian ranges,
 		// Atan() calculations would be bizarre.
 
-		// Practically, if YawRate is sampled often enough
+		// Practically, if YawVel is sampled often enough
 		// that angular changes between samples are < 12 degrees or 0.2 radians,
 		// and since tan(0.2) is nearly 0.2, then dividing radians per second by tangential speed
 		// is practically equivalent to lateral displacement increments divided by tangential distance increments.
@@ -29,8 +29,8 @@ namespace blekenbleu.loaded
 		// correlates directly to `OrientationYawVelocity` *without dividing* `OrientationYawVelocity` by `SpeedKmh`.
 		double OS ()
 		{
-			// remove slider 100x but apply YawRate and SwayRate scale factors to match Steering degrees
-			var yaw = 0.0025 * View.Model.YawScale * YawRate;
+			// remove slider 100x but apply YawVel and SwayRate scale factors to match Steering degrees
+			var yaw = 0.0025 * View.Model.YawScale * YawVel;
 			var sway = 0.001 * View.Model.SwayScale * SwayRate;
 			if (0.5 < Absteer)
 			{
@@ -55,22 +55,22 @@ namespace blekenbleu.loaded
 			if (5 > SpeedKmh)
 				return YawSway = 0D;
 
-			// division blows up near 0 YawRate
-			if (5000 <= Settings.Gct || 0D == YawRate)
+			// division blows up near 0 YawVel
+			if (5000 <= Settings.Gct || 0D == YawVel)
 				return OS();
- 			if ((9F < YawRate * YawRate) || (25F < SwayRate * SwayRate))
+ 			if ((9F < YawVel * YawVel) || (25F < SwayRate * SwayRate))
 				return OS();
  			if (1F < SwayAcc * SwayAcc)
 				return OS();
 			// avoid Steering, Yaw and Sway of different signs
-			if (Math.Sign(SwayRate) != Math.Sign(YawRate))
+			if (Math.Sign(SwayRate) != Math.Sign(YawVel))
 				return OS();
 			if (Math.Sign(SwayRate) != Math.Sign(Steering))
 				return OS();
 
-			// relatively small YawRate / SwayRate are nearly linear
+			// relatively small YawVel / SwayRate are nearly linear
 			// rescale yaw and sway to approximate Steering range
-			LPfilter(ref LPyaw, 10, Math.Abs(0.25D * YawRate));
+			LPfilter(ref LPyaw, 10, Math.Abs(0.25D * YawVel));
 			LPfilter(ref LPsway, 10, Math.Abs(0.1D * SwayRate));
 
 			// rescale for sliders

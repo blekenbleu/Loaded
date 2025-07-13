@@ -152,14 +152,20 @@ namespace blekenbleu.loaded
 			pm = pluginManager;
 
 			// Update property values (declared in Init)
-			if (!data.GameRunning || null == data.OldData || null == data.NewData || null == data.NewData.CarId)
+			if (!data.GameRunning || null == data.OldData
+			 || null == data.NewData || null == data.NewData.CarId)
+			{
+				Paused = true;
+				Heave = SurgeAcc = SwayAcc = SwayRate = SlipRate = YawVel = LatAcc = 0;
 				return;
+			}
 
 			try
 			{
 				if (View.Model.Recal)
 				{
-					Settings.Gtot = Settings.Stot = Settings.scaleTot = Settings.Gct = Settings.scaleCt = Settings.Sct = 0;
+					Settings.Gtot = Settings.Stot = Settings.scaleTot = Settings.Gct
+								  = Settings.scaleCt = Settings.Sct = 0;
 					View.Model.Recal = false;
 				}
 				if (10 < Srun)	// OverSteer(), RangeyRover() heartbeat
@@ -170,10 +176,28 @@ namespace blekenbleu.loaded
 				} else Srun++;
 
 				// skip LPfilter() if not updating
-				Paused = 0 == (SpeedKmh = data.NewData.SpeedKmh);
 				PacketTime = data.NewData.CurrentLapTime;
-				Heave = data.NewData.AccelerationHeave ?? 0;
-				SurgeAcc = data.NewData.AccelerationSurge ?? 0;
+				double abSteer = Math.Abs(Prop(Psteer));
+				if (abSteer > View.Model.Stlo && 5 < data.NewData.SpeedKmh)
+				{
+					SpeedKmh = data.NewData.SpeedKmh;
+					// Normalized steering input:   [ -1.0f <= Prop(Psteer) <= 1.0f ]
+					SteerPC = Prop(Psteer);
+					Paused = false;
+					Heave = data.NewData.AccelerationHeave ?? 0;
+					SurgeAcc = data.NewData.AccelerationSurge ?? 0;
+					// Local velocities and acceleration
+					SwayAcc = data.NewData.AccelerationSway ?? 0;
+					SwayRate = 1000 * SwayAcc / SpeedKmh;
+					// radians per second?
+					YawVel = data.NewData.OrientationYawVelocity;
+					if (50 < YawVel)
+						YawVel = 50;
+					LatAcc = 0.0055 * YawVel * SpeedKmh;		// ideal lateral acceleration for current Yaw Velocity
+					SlipRate = LatAcc - SwayAcc;
+					SlipAngleRate = YawVel - 0.2 * SwayRate;
+				}
+				else Paused = true;
 
 				var old = Pitch;								// potentially for load estimates
 				Pitch = data.NewData.OrientationPitch;
@@ -182,15 +206,8 @@ namespace blekenbleu.loaded
 				Roll = data.NewData.OrientationRoll;
 				DRoll = Roll - old;
 
-				// Local velocities and acceleration
-				SwayAcc = data.NewData.AccelerationSway ?? 0;
-				// radians per second?
-				YawRate = 50 < data.NewData.OrientationYawVelocity ? 50 : data.NewData.OrientationYawVelocity;
-				SwayRate = (5 < SpeedKmh) ? 1000 * SwayAcc / SpeedKmh : 0;
-
 				// game specific properties
-				// Normalized steering input:   [ -1.0f <= Prop(Psteer) <= 1.0f ]
-				Steering = stang * (SteerPC = Prop(Psteer));	// +/- 1 to -/+ degrees
+				Steering = stang * SteerPC;	// +/- 1 to -/+ degrees
 				Vsway = Prop(Psway);
 				Load();
 				if (GameDBText == "AssettoCorsa")

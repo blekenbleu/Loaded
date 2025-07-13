@@ -34,6 +34,11 @@ Front Right wheel load:   `loadFR = 25 + Loaded.Heave*Loaded.FRdefl/(Loaded.FRde
 - one version based on [RangeyRover Automobilista 2 ShakeIt profile JavaScript](Properties/RearLeftFormula.md)
 - another considering only vehicle attitude vs trajectory
 
+### [Slip](https://blekenbleu.github.io/SimHub/slip.htm)
+- Oversteer is based on slip, specifically [center-of-gravity SideSlip AKA lateral velocity](https://blekenbleu.github.io/SimHub/sideslip.htm)
+- start from `SideSlip rate =  AccelerationSway - OrientationYawVelocity * SpeedKmh`,  
+ &emsp; then integrate over time
+
 ### relevant SimHub properties
 - AccelerationHeave, AccelerationSurge, AccelerationSway,
  GlobalAccelerationG, OrientationPitchAcceleration,
