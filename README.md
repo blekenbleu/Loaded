@@ -70,3 +70,39 @@ Front Right wheel load:   `loadFR = 25 + Loaded.Heave*Loaded.FRdefl/(Loaded.FRde
         }
 ```
 - *reminder*:&nbsp; [**WPF Data Binding: C# INotifyPropertyChanged**](https://wellsb.com/csharp/learn/wpf-data-binding-csharp-inotifypropertychanged/)
+
+### New to me:
+- *range slider* - lower and upper thumbs, logarithmic range,
+[modified from WpfRangeSlider](https://github.com/blekenbleu/WpfRangeSlider)  
+![](https://github.com/blekenbleu/WpfRangeSlider/raw/master/Blue.jpg)  
+- [xaml Binding Converter](https://learn.microsoft.com/en-us/dotnet/desktop/wpf/data/how-to-convert-bound-data)  
+```
+    // https://learn.microsoft.com/en-us/dotnet/desktop/wpf/data/how-to-convert-bound-data
+    [ValueConversion(typeof(double), typeof(double))]
+    public class PerCentConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return 100D * (double)value;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return 0.01 * (double)value;
+        }
+    }
+```
+ &emsp; For SimHub plugins with xaml `ResourceDictionary` (e.g. for RangeSlider),  
+ &emsp; [Binding Converter instance declaration](https://riptutorial.com/xaml/example/29208/creating-and-using-a-converter--booleantovisibilityconverter-and-invertiblebooleantovisibilityconverter) (`x:Key`) goes *in it*:
+```
+        <UserControl.Resources>
+            <ResourceDictionary>
+                <loaded:PerCentConverter x:Key="percentConverter"/>
+                <ResourceDictionary.MergedDictionaries>
+                    <ResourceDictionary Source="Themes/RangeSlider.xaml"/>
+                </ResourceDictionary.MergedDictionaries>
+            </ResourceDictionary>
+        </UserControl.Resources>
+...
+	<TextBox Name="loPC" Text="{Binding Path=Stlo, Converter={StaticResource percentConverter}}"/>
+```

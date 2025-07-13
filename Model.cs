@@ -123,5 +123,17 @@ namespace blekenbleu.loaded
 			get => Set.recal;
 			set { SetField(ref Set.recal, value, nameof(Recal)); }
 		}
+
+		public double Stlo
+		{
+			get => Set.Stlo;
+			set { SetField(ref Set.Stlo, value, nameof(Stlo)); }
+		}
+
+		public double Sthi
+		{
+			get => Set.Sthi;
+			set { SetField(ref Set.Sthi, value, nameof(Sthi)); }
+		}
 	}
 }

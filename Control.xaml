@@ -7,7 +7,16 @@
 	mc:Ignorable="d"
 	xmlns:styles="clr-namespace:SimHub.Plugins.Styles;assembly=SimHub.Plugins"
 	xmlns:ui="clr-namespace:SimHub.Plugins.UI;assembly=SimHub.Plugins"
-	>
+	xmlns:slider="clr-namespace:FunwayControls"
+	xmlns:loaded="clr-namespace:blekenbleu.loaded">
+		<UserControl.Resources>
+			<ResourceDictionary>
+				<loaded:PerCentConverter x:Key="percentConverter"/>
+				<ResourceDictionary.MergedDictionaries>
+					<ResourceDictionary Source="Themes/RangeSlider.xaml"/>
+				</ResourceDictionary.MergedDictionaries>
+			</ResourceDictionary>
+		</UserControl.Resources>
 		<Grid
 			Width="600" VerticalAlignment="Top">
 		<ScrollViewer VerticalScrollBarVisibility="Auto">
@@ -21,11 +30,11 @@
 									 Value="{Binding Thresh_sv, Mode=TwoWay}"
 									 TickFrequency = "1" IsSnapToTickEnabled = "True"
 									 Maximum="50" Minimum="0"/>
-				<ui:TitledSlider Title="	 surge threshold - will be multiplied by 0.01"
+				<ui:TitledSlider Title="	 surge threshold %"
 									 Value="{Binding Thresh_ss, Mode=TwoWay}"
 									 TickFrequency = "1" IsSnapToTickEnabled = "True"
 									 Maximum="50" Minimum="0"/>
-				<ui:TitledSlider Title="	 heave threshold - will be multiplied by 0.01"
+				<ui:TitledSlider Title="	 heave threshold %"
 									 Value="{Binding Thresh_sh, Mode=TwoWay}"
 									 TickFrequency = "1" IsSnapToTickEnabled = "True"
 									 Maximum="50" Minimum="0"/>
@@ -41,12 +50,12 @@
 									 Maximum="100" Minimum="20"/>
 				<StackPanel Orientation="Horizontal" FlowDirection="LeftToRight" HorizontalAlignment="Center">
 					<Button x:Name="b0" Background="{Binding ModeColor}" Content="{Binding Mode}"
-								Height="40" Click="Mode_Click"/>
+								Height="25" Click="Mode_Click"/>
 					<TextBlock Text="  "/>
-					<Button x:Name="b1" Background="Gray" Content=" Press to recalibrate   " Height="40"
+					<Button x:Name="b1" Background="Gray" Content=" recalibrate " Height="25"
 								Visibility="{Binding ButtonVisibility}" Click="Recal_Click"/>
 					<TextBlock Text="  "/>
-					<Border BorderBrush="{x:Null}" Height="40" Width="80" Background="White">
+					<Border BorderBrush="{x:Null}" Height="25" Width="80" Background="White">
 						<TextBlock VerticalAlignment="Center" HorizontalAlignment="Center">
 								<Hyperlink RequestNavigate="Hyperlink_RequestNavigate"
 									NavigateUri="https://github.com/blekenbleu/Loaded?tab=readme-ov-file#loaded">
@@ -67,6 +76,17 @@
 									 Value="{Binding RRscale, Mode=TwoWay}"
 									 TickFrequency = "1" IsSnapToTickEnabled = "True"
 									 Maximum="190" Minimum="1"/>
+				<TextBlock Text="	 Side Slip Rate calibration - Steer % range"/>
+				<StackPanel Orientation="Horizontal" FlowDirection="LeftToRight">
+					<TextBlock Width="25" Text="min" VerticalAlignment="Center"/>
+					<TextBox Name="loPC" Text="{Binding Path=Stlo, Converter={StaticResource percentConverter}}"/>
+					<TextBlock Text="  "/>
+					<slider:RangeSlider Orientation="Horizontal" Width="470" Height="15" Maximum="-1" Minimum="-6"
+									   Start="{Binding Stlo}" End="{Binding Sthi}" Background="Blue"/>
+					<TextBlock Text=" "/>
+					<TextBox Name="hiPC" Text="{Binding Path=Sthi, Converter={StaticResource percentConverter}}"/>
+					<TextBlock Width="30" Text=" max" VerticalAlignment="Center"/>
+				</StackPanel>
 			</StackPanel>
 		</ScrollViewer>
 	</Grid>
