@@ -6,7 +6,7 @@ namespace blekenbleu.loaded
 	{
 		string GameDBText, LoadStr, DeflStr, oops = "";
 		double LoadFL, LoadFR, LoadRL, LoadRR, DeflFL, DeflFR, DeflRL, DeflRR;
-		double LPyaw = 0, LPsway = 0, LatAcc, SlipAngleRate;
+		double LPyaw = 0, LPsway = 0, LatAcc, SlipAngleRate, LatVel;
 		double ACprodFRslip = 0;
 		double Loads, Heave, YawVel, Steering, SteerPC, Vsway, SlipRate;
 		double SurgeAcc = 0, Roll = 0, DRoll = 0, Pitch = 0, DPitch = 0;
@@ -25,9 +25,11 @@ namespace blekenbleu.loaded
 			this.AttachDelegate("DRoll",		() => DRoll);
 			this.AttachDelegate("DPitch",		() => DPitch);
 			this.AttachDelegate("LatAcc",		() => LatAcc);
+			this.AttachDelegate("LatVel",		() => LatVel);
 			this.AttachDelegate("OverSteer",	() => OverSteer()); // attitude - trajectory: ayaw - View.Model.YawScale * asway
 			this.AttachDelegate("SpeedKmh",		() => Paused ? 0 : Kalman.Filter(SpeedKmh, ref Kkmh));	// Kalman-filtered SpeedKmh
 			this.AttachDelegate("KSwayAcc",		() => Paused ? 0 : Kalman.Filter(SwayAcc, 0.8, ref Kswa));
+			this.AttachDelegate("SwayAcc",		() => SwayAcc);
 			this.AttachDelegate("SlipAngleRate",() => SlipAngleRate);
 			this.AttachDelegate("SlipRate",		() => SlipRate);
 			this.AttachDelegate("SwayRate",		() => SwayRate);	// 1000 * SwayAcc / SpeedKmh

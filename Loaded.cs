@@ -156,7 +156,7 @@ namespace blekenbleu.loaded
 			 || null == data.NewData || null == data.NewData.CarId)
 			{
 				Paused = true;
-				Heave = SurgeAcc = SwayAcc = SwayRate = SlipRate = YawVel = LatAcc = 0;
+				Heave = SurgeAcc = SwayAcc = SwayRate = SlipRate = YawVel = LatAcc = LatVel = 0;
 				return;
 			}
 
@@ -193,12 +193,17 @@ namespace blekenbleu.loaded
 					YawVel = data.NewData.OrientationYawVelocity;
 					if (50 < YawVel)
 						YawVel = 50;
-					LatAcc = 0.0055 * YawVel * SpeedKmh;		// ideal lateral acceleration for current Yaw Velocity
+					LatAcc = 0.0048 * YawVel * SpeedKmh;        // ideal lateral acceleration for current Yaw Velocity
 					SlipRate = LatAcc - SwayAcc;
+					LatVel += 0.1 * SlipRate;
 					SlipAngleRate = YawVel - 0.2 * SwayRate;
 				}
-				else Paused = true;
+				else
+				{
+					Paused = true;
+					LatVel -= 0.01 * LatVel;
 
+                }
 				var old = Pitch;								// potentially for load estimates
 				Pitch = data.NewData.OrientationPitch;
 				DPitch = Pitch - old;
