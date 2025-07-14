@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
 
@@ -37,6 +38,7 @@ namespace blekenbleu.loaded
 	public class Model : NotifyPropertyChanged	// XAML DataContext
 	{
         readonly Settings Set;
+		internal ushort LAi = 1;
 
 		public Model(Loaded plugin)
 		{
@@ -134,6 +136,12 @@ namespace blekenbleu.loaded
 		{
 			get => Set.Sthi;
 			set { SetField(ref Set.Sthi, value, nameof(Sthi)); }
+		}
+
+		public double LAscale
+		{
+			get => Set.LAscale;
+			set { SetField(ref Set.LAscale, Math.Round(value, 2), nameof(LAscale)); }
 		}
 	}
 }

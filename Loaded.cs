@@ -60,7 +60,7 @@ namespace blekenbleu.loaded
 		{
 			SimHub.Logging.Current.Info("Starting " + LeftMenuTitle);
 			Game(GameDBText = pluginManager.GameName, "DataCorePlugin.GameRawData.");
-
+			ss[0] = ls[0] = 1;		// initialize LatVelCal() SwayAcc, latAcc sample arrays
 			// Load settings
 			Settings = this.ReadCommonSettings<Settings>("GeneralSettings", () => new Settings());
 			Attach();
@@ -193,14 +193,12 @@ namespace blekenbleu.loaded
 					YawVel = data.NewData.OrientationYawVelocity;
 					if (50 < YawVel)
 						YawVel = 50;
-					LatAcc = 0.0048 * YawVel * SpeedKmh;        // ideal lateral acceleration for current Yaw Velocity
+				//	if (abSteer < View.Model.Sthi && View.Model.LAi < ls.Length)
+				//		LatVelCal(YawVel * SpeedKmh);
+					LatAcc = 0.0001 * View.Model.LAscale * YawVel * SpeedKmh;		// ideal lateral acceleration for current Yaw Velocity
 					SlipRate = LatAcc - SwayAcc;
-					if (abSteer > View.Model.Sthi)
-					{
-						LatVel += 0.1 * SlipRate;
-						double damping = 4 + LatAcc * LatAcc + SwayAcc * SwayAcc;
-						LatVel -= LatVel / damping;
-					} else LatVel = 0;
+					LatVel += 0.1 * SlipRate;
+					LatVel -= LatVel / (4 + LatAcc * LatAcc + SwayAcc * SwayAcc);	// damping
 					SlipAngleRate = YawVel - 0.2 * SwayRate;
 				}
 				else

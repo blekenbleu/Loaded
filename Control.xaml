@@ -76,6 +76,11 @@
 									 Value="{Binding RRscale, Mode=TwoWay}"
 									 TickFrequency = "1" IsSnapToTickEnabled = "True"
 									 Maximum="190" Minimum="1"/>
+				<TextBlock Text="	 Lateral Acceleration scale"/>
+				<StackPanel Orientation="Horizontal" FlowDirection="LeftToRight">
+					<Slider Value="{Binding LAscale, Mode=TwoWay}" Maximum="60" Minimum="45" Width="550"/>
+					<TextBox Text="{Binding LAscale}" VerticalAlignment="Top"/>
+				</StackPanel>
 				<TextBlock Text="	 Side Slip Rate calibration - Steer % range"/>
 				<StackPanel Orientation="Horizontal" FlowDirection="LeftToRight">
 					<TextBlock Width="25" Text="min" VerticalAlignment="Center"/>

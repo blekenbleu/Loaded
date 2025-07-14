@@ -26,6 +26,8 @@ namespace blekenbleu.loaded
 			this.AttachDelegate("DPitch",		() => DPitch);
 			this.AttachDelegate("LatAcc",		() => LatAcc);
 			this.AttachDelegate("LatVel",		() => LatVel);
+			this.AttachDelegate("LAi",			() => View.Model.LAi);
+			this.AttachDelegate("LAscale",		() => View.Model.LAscale);
 			this.AttachDelegate("OverSteer",	() => OverSteer()); // attitude - trajectory: ayaw - View.Model.YawScale * asway
 			this.AttachDelegate("SpeedKmh",		() => Paused ? 0 : Kalman.Filter(SpeedKmh, ref Kkmh));	// Kalman-filtered SpeedKmh
 			this.AttachDelegate("KSwayAcc",		() => Paused ? 0 : Kalman.Filter(SwayAcc, 0.8, ref Kswa));
