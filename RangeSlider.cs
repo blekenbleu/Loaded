@@ -66,14 +66,14 @@ namespace FunwayControls
 
         public double Start
         {
-            get => Math.Log((double)GetValue(StartProperty), 3);
-            set => SetValue(StartProperty, Math.Round(Math.Pow(3, value), 3));
+            get => Math.Log((double)GetValue(StartProperty), 4);
+            set => SetValue(StartProperty, Math.Round(Math.Pow(4, value), 4));
         }
 
         public double End
         {
-            get => Math.Log((double)GetValue(EndProperty), 3);
-            set => SetValue(EndProperty, Math.Round(Math.Pow(3, value), 3));
+            get => Math.Log((double)GetValue(EndProperty), 4);
+            set => SetValue(EndProperty, Math.Round(Math.Pow(4, value), 3));
         }
 
         public bool IsMoveToPointEnabled

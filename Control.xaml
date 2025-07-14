@@ -81,7 +81,7 @@
 					<TextBlock Width="25" Text="min" VerticalAlignment="Center"/>
 					<TextBox Name="loPC" Text="{Binding Path=Stlo, Converter={StaticResource percentConverter}}"/>
 					<TextBlock Text="  "/>
-					<slider:RangeSlider Orientation="Horizontal" Width="470" Height="15" Maximum="-1" Minimum="-6"
+					<slider:RangeSlider Orientation="Horizontal" Width="470" Height="15" Maximum="-1" Minimum="-5"
 									   Start="{Binding Stlo}" End="{Binding Sthi}" Background="Blue"/>
 					<TextBlock Text=" "/>
 					<TextBox Name="hiPC" Text="{Binding Path=Sthi, Converter={StaticResource percentConverter}}"/>
