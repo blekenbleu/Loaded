@@ -21,7 +21,7 @@ namespace blekenbleu.loaded
 				if (ss.Length == View.Model.LAi)
 				{
 					(double, double)fl = Fit.Line(ls, ss);
-					View.Model.LAscale = 10000 * fl.Item2;
+					View.Model.LAscale = fl.Item2;
 				}
 			}
 		}

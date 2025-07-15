@@ -195,7 +195,7 @@ namespace blekenbleu.loaded
 						YawVel = 50;
 				//	if (abSteer < View.Model.Sthi && View.Model.LAi < ls.Length)
 				//		LatVelCal(YawVel * SpeedKmh);
-					LatAcc = 0.0001 * View.Model.LAscale * YawVel * SpeedKmh;		// ideal lateral acceleration for current Yaw Velocity
+					LatAcc = View.Model.LAscale * YawVel * SpeedKmh;		// ideal lateral acceleration for current Yaw Velocity
 					SlipRate = LatAcc - SwayAcc;
 					LatVel += 0.1 * SlipRate;
 					LatVel -= LatVel / (4 + LatAcc * LatAcc + SwayAcc * SwayAcc);	// damping

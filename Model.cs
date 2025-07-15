@@ -141,7 +141,7 @@ namespace blekenbleu.loaded
 		public double LAscale
 		{
 			get => Set.LAscale;
-			set { SetField(ref Set.LAscale, Math.Round(value, 2), nameof(LAscale)); }
+			set { SetField(ref Set.LAscale, Math.Round(value, 5), nameof(LAscale)); }
 		}
 	}
 }
