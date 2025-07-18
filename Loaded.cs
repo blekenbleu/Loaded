@@ -198,8 +198,8 @@ namespace blekenbleu.loaded
 					LatAcc = View.Model.LAscale * YawVel * SpeedKmh;		// ideal lateral acceleration for current Yaw Velocity
 					SlipRate = LatAcc - SwayAcc;
 					LatVel += 0.1 * SlipRate;
-					LatVel -= LatVel / (4 + LatAcc * LatAcc + SwayAcc * SwayAcc);	// damping
-					SlipAngleRate = YawVel - 0.2 * SwayRate;
+					LatVel -= LatVel / (4 + (LatAcc * LatAcc) + (SwayAcc * SwayAcc));	// damping
+					SlipAngleRate = YawVel - (0.2 * SwayRate);
 				}
 				else
 				{
@@ -219,7 +219,7 @@ namespace blekenbleu.loaded
 				Vsway = Prop(Psway);
 				Load();
 				if (GameDBText == "AssettoCorsa")
-					ACprodFRslip = Slip('4') * Slip('3') - Slip('2') * Slip('1');
+					ACprodFRslip = (Slip('4') * Slip('3')) - (Slip('2') * Slip('1'));
 			} catch (Exception e)
 			{
 				string oops = e?.ToString();

@@ -25,8 +25,8 @@ namespace blekenbleu.loaded
 			return rate;
 		}
 
-		// Also practically, SwayRate (`1000 * AccelerationSway / SpeedKmh`) by observation
-		// correlates directly to `OrientationYawVelocity` *without dividing* `OrientationYawVelocity` by `SpeedKmh`.
+		// Also practically, SwayRate (1000 * AccelerationSway / SpeedKmh) by observation
+		// correlates directly to OrientationYawVelocity without dividing OrientationYawVelocity by SpeedKmh.
 		double OS ()
 		{
 			// remove slider 100x but apply YawVel and SwayRate scale factors to match Steering degrees
@@ -58,9 +58,9 @@ namespace blekenbleu.loaded
 			// division blows up near 0 YawVel
 			if (5000 <= Settings.Gct || 0D == YawVel)
 				return OS();
- 			if ((9F < YawVel * YawVel) || (25F < SwayRate * SwayRate))
+ 			if ((9F < (YawVel * YawVel)) || (25F < (SwayRate * SwayRate)))
 				return OS();
- 			if (1F < SwayAcc * SwayAcc)
+ 			if (1F < (SwayAcc * SwayAcc))
 				return OS();
 			// avoid Steering, Yaw and Sway of different signs
 			if (Math.Sign(SwayRate) != Math.Sign(YawVel))

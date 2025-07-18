@@ -140,16 +140,16 @@ namespace FunwayControls
                 if (Orientation == Orientation.Horizontal)
                 {
                     var viewportSize = SliderContainer != null ? SliderContainer.ActualWidth : arrangeBounds.Width;
-                    var startPosition = (start - Minimum) / (Maximum - Minimum) * viewportSize;
-                    var endPosition = (end - Minimum) / (Maximum - Minimum) * viewportSize;
+                    var startPosition = viewportSize * (start - Minimum) / (Maximum - Minimum);
+                    var endPosition = viewportSize * (end - Minimum) / (Maximum - Minimum);
                     rectStart = new Rect(0, 0, startPosition, arrangeBounds.Height);
                     rectEnd = new Rect(endPosition, 0, viewportSize - endPosition, arrangeBounds.Height);
                 }
                 else
                 {
                     var viewportSize = SliderContainer != null ? SliderContainer.ActualHeight : arrangeBounds.Height;
-                    var startPosition = (start - Minimum) / (Maximum - Minimum) * viewportSize;
-                    var endPosition = (end - Minimum) / (Maximum - Minimum) * viewportSize;
+                    var startPosition = viewportSize * (start - Minimum) / (Maximum - Minimum);
+                    var endPosition = viewportSize * (end - Minimum) / (Maximum - Minimum);
                     rectStart = new Rect(0, 0, arrangeBounds.Width, startPosition);
                     rectEnd = new Rect(0, endPosition, arrangeBounds.Width, viewportSize - endPosition);
                 }
