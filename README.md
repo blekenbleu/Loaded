@@ -39,6 +39,12 @@ Front Right wheel load:   `loadFR = 25 + Loaded.Heave*Loaded.FRdefl/(Loaded.FRde
 - start from `SideSlip rate =  AccelerationSway - OrientationYawVelocity * SpeedKmh`,  
  &emsp; then integrate over time
 
+### [Side Slip Angle Rate](https://blekenbleu.github.io/SimHub/sliprate)
+`0.00485 * OrientationYawVelocity - AccelerationHeave / SpeedKmh`
+- not only avoid `SpeedKmh` divide by zero exceptions,   
+	but also small steering inputs likely provoking slight tire wall flex,  
+  with `OrientationYawVelocity` correlating poorly to `AccelerationHeave / SpeedKmh`.
+
 ### relevant SimHub properties
 - AccelerationHeave, AccelerationSurge, AccelerationSway,
  GlobalAccelerationG, OrientationPitchAcceleration,

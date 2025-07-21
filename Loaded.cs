@@ -156,7 +156,7 @@ namespace blekenbleu.loaded
 			 || null == data.NewData || null == data.NewData.CarId)
 			{
 				Paused = true;
-				Heave = SurgeAcc = SwayAcc = SwayRate = SlipRate = YawVel = LatAcc = LatVel = 0;
+				Heave = SurgeAcc = SwayAcc = SwayRate = SlipRate = YawVel = YawRate = LatAcc = LatVel = 0;
 				return;
 			}
 
@@ -195,11 +195,13 @@ namespace blekenbleu.loaded
 						YawVel = 50;
 				//	if (abSteer < View.Model.Sthi && View.Model.LAi < ls.Length)
 				//		LatVelCal(YawVel * SpeedKmh);
-					LatAcc = View.Model.LAscale * YawVel * SpeedKmh;		// ideal lateral acceleration for current Yaw Velocity
+					YawRate = View.Model.LAscale * YawVel;
+					LatAcc = YawRate * SpeedKmh;		// ideal lateral acceleration for current OrientationYawVelocity
+					SwayAccAngle = SwayAcc / SpeedKmh;
+					SideSlipAngleRate = YawRate - SwayAccAngle;
 					SlipRate = LatAcc - SwayAcc;
 					LatVel += 0.1 * SlipRate;
 					LatVel -= LatVel / (4 + (LatAcc * LatAcc) + (SwayAcc * SwayAcc));	// damping
-					SlipAngleRate = YawVel - (0.2 * SwayRate);
 				}
 				else
 				{

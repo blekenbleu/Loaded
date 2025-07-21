@@ -5,7 +5,8 @@ namespace blekenbleu.loaded
 {
 	public partial class Loaded
 	{
-		double MRyaw = 0, MRsway = 0, SwayRadians, YawRadians;
+		double MRyaw = 0, MRsway = 0;	// LPfilter() applied
+		double SwayRadians, YawRadians;
 		double yaw_rate, Vlateral, Vlong, RRSwayScale, RRscale;
 		double RRyawSway, front_slip_angle, SwayRatio;
 /*

@@ -5,7 +5,7 @@ namespace blekenbleu.loaded
 {
 	public partial class Loaded
 	{
-		double YawSway = 0, YawVsteer = 0, SwayVsteer = 0, Absteer = 0;
+		double YawVsteer = 0, SwayVsteer = 0, Absteer = 0;
 
 		// `OverSteer()` sorts vehicle orientation vs trajectory
 		// Since radians per second can be well outside meaningful static radian ranges,
